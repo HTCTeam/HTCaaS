@@ -1,0 +1,79 @@
+#!/bin/bash
+pwd=`pwd`
+
+lflag=0
+fflag=0
+rflag=0
+num=1
+con=
+for j in $@
+do
+#	echo $num
+#	echo $j
+	
+	if [ $j = '-h' ] || [ $j = '--help' ]
+	then
+		con=$j
+		break
+	elif [ $j = '-f' ] || [ $j = '--file' ]
+	then
+		fflag=1
+		con=`echo $con $j`
+		let num=num+1
+		continue
+	elif [ $j = '-l' ] || [ $j = '--L' ]
+	then
+		lflag=1
+		con=`echo $con $j`
+		let num=num+1
+		continue
+	elif [ $fflag = 1 ]
+	then
+		tmp=`expr index "$j" /`
+                lf=$pwd'/'$j
+		if [ $tmp = 1 ]
+		then
+			ff=$j
+		else
+			ff=$pwd'/'$j
+		fi
+		
+		con=`echo $con $ff`
+		fflag=0
+	elif [ $lflag = 1 ]
+        then
+		tmp=`expr index "$j" /`
+                if [ $tmp = 1 ]
+                then
+			lf=$j
+                else
+			lf=$pwd'/'$j
+                fi
+                con=`echo $con $lf`
+                lflag=0
+	elif [ $j = '-r' ] || [ $j = '--R' ]
+	then
+		rflag=1
+		con=`echo $con $j`
+		let num=num+1
+		continue
+	elif [ $rflag = 1 ]
+	then 
+		con=`echo $con $j`
+	elif [ $j = '-i' ]
+        then
+		iflag=1
+                con=`echo $con $j`
+	elif [ $iflag = 1 ]
+        then
+                con=`echo $con $j`
+	fi
+
+
+let num=num+1
+done
+
+#echo $con
+#$HTCaaS_Client/build/run_uploadfile.sh $1 $2 $3 $4 $5 $6 $7 $8 
+$HTCaaS_Client/build/run_uploadfile.sh $con
+

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="SubmitMGMetaJob" default="compile" basedir="../..">
+
+	<property name="name" value="SubmitMGMetaJob" />
+	<property name="release" value="${name}" />
+	<property name="src.dir" value="src/org/kisti/htc/cli/client" />
+	<property name="build.dir" value="build" />
+	<property name="lib.dir" value="lib/cli" />
+	<property name="slib.dir" value="lib/shared" />
+	<property name="conf.dir" value="conf/cli" />
+	<property name="dist.dir" value="dist" />
+	<property name="jar.name" value="${name}.jar" />
+	<property name="jar.path" location="${dist.dir}/${jar.name}" />
+	<property name="jar.name2" value="HTCaaSClient.jar" />
+	<property name="jar.path2" location="${dist.dir}/${jar.name2}" />
+	<property name="zip.name" value="${release}.zip" />
+	<property name="zip.path" location="${dist.dir}/${zip.name}" />
+
+	<path id="classpath">
+		<pathelement location="${build.dir}" />
+		<pathelement location="${conf.dir}" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${slib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${dist.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="compile" depends="prepare">
+		<javac srcdir="${src.dir}" destdir="${build.dir}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="clean">
+		<delete dir="${dist.dir}" />
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${jar.path}" basedir="${build.dir}">
+			<manifest>
+			<attribute name="Main-Class" value="org.kisti.htc.cli.client.SubmitMGMetaJob" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="zip" depends="jar">
+		<zip destfile="${zip.path}">
+			<zipfileset dir="${dist.dir}" includes="${jar.name}" prefix="${release}/dist" />
+			<zipfileset dir="${lib.dir}" prefix="${release}/lib">
+				<include name="**/*.jar" />
+			</zipfileset>
+			<zipfileset dir="${slib.dir}" prefix="${release}/lib">
+				<include name="**/*.jar" />
+			</zipfileset>
+			<zipfileset dir="conf" prefix="${release}/conf">
+				<include name="HTCaaS_Client.conf" />
+				<include name="cli/log4j.properties" />
+			</zipfileset>
+		</zip>
+	</target>
+
+
+</project>

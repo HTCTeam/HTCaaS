@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="HTCaaSServer" default="compile" basedir=".">
+
+	<property name="name" value="HTCaaS" />
+	<property name="release" value="${name}" />
+	<property name="src.dir" value="src" />
+	<property name="build.dir" value="build" />
+	<property name="lib.dir" value="lib" />
+	<property name="conf.dir" value="conf" />
+	<property name="dist.dir" value="dist" />
+	<property name="jar.name" value="${name}.jar" />
+	<property name="jar.path" location="${dist.dir}/${jar.name}" />
+	<property name="zip.name" value="${release}.zip" />
+	<property name="zip.path" location="${dist.dir}/${zip.name}" />
+
+	<path id="classpath">
+		<pathelement location="${build.dir}" />
+		<pathelement location="${conf.dir}" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${slib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="compile" depends="prepare">
+		<javac srcdir="${src.dir}" destdir="${build.dir}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="clean">
+		<delete dir="${dist.dir}" />
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="cleanTmp">
+		<delete file="tmp/*.*" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${jar.path}" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="org.kisti.htc.cli.client.SubmitMetaJob" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="zip" depends="cleanTmp">
+		<zip destfile="${zip.path}">
+			<zipfileset dir="." prefix="${release}">
+				<include name="**/*" />
+				<include name="**/*.*" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="deployToWisdom" depends="zip">
+		<scp todir="seungwoo@wisdom.kisti.re.kr:/home/seungwoo/" port="6980" id="seungwoo" password="shtmddn" trust="true">
+			<fileset dir="dist">
+				<include name="HTCaaS.zip" />
+			</fileset>
+		</scp>
+		<sshexec host="wisdom.kisti.re.kr" port="6980" username="seungwoo" id="seungwoo" password="shtmddn" trust="true" command="unzip -o /home/seungwoo/HTCaaS.zip -d /home/seungwoo/" />
+		<sshexec host="wisdom.kisti.re.kr" port="6980" username="seungwoo" id="seungwoo" password="shtmddn" trust="true" command="cp /home/seungwoo/HTCaaS/conf/HTCaaS_wisdom.conf /home/seungwoo/HTCaaS/conf/HTCaaS.conf" />
+		<delete file="${dist.dir}/HTCaaS.zip" />
+	</target>
+
+	<target name="deployToKenobi" depends="zip">
+		<scp todir="seungwoo@kenobi.kisti.re.kr:/home/seungwoo/workspace" port="6980" password="shtmddn">
+			<fileset dir="dist">
+				<include name="HTCaaS.zip" />
+			</fileset>
+		</scp>
+		<sshexec host="kenobi.kisti.re.kr" port="6980" username="seungwoo" password="shtmddn" trust="true" command="unzip -o /home/seungwoo/workspace/HTCaaS.zip -d /home/seungwoo/workspace/" />
+		<delete file="${dist.dir}/HTCaaS.zip" />
+	</target>
+
+	<target name="deployToHep012" depends="zip">
+		<scp todir="htcaas@150.183.250.200:/home/htcaas/" port="6980" id="htcaas" password="kisti!@#$%" trust="true">
+			<fileset dir="dist">
+				<include name="HTCaaS.zip" />
+			</fileset>
+		</scp>
+		<sshexec host="150.183.250.200" port="6980" username="htcaas" id="htcaas" password="kisti!@#$%" trust="true" command="unzip -o /home/htcaas/HTCaaS.zip -d /home/htcaas/" />
+		<delete file="${dist.dir}/HTCaaS.zip" />
+	</target>
+
+	<target name="deployToDiamond" depends="zip">
+		<scp todir="seungwoo@150.183.250.204:/home/seungwoo/workspace" port="6980" id="seungwoo" password="shtmddn" trust="true">
+			<fileset dir="dist">
+				<include name="HTCaaS.zip" />
+			</fileset>
+		</scp>
+		<sshexec host="150.183.250.204" port="6980" username="seungwoo" id="seungwoo" password="shtmddn" trust="true" command="unzip -o /home/seungwoo/workspace/HTCaaS.zip -d /home/seungwoo/workspace/htc/" />
+		<delete file="${dist.dir}/HTCaaS.zip" />
+	</target>
+
+	<target name="deployToLogin03" depends="zip">
+		<scp todir="htcaas@150.183.158.190:/home/htcaas/workspace" port="22" id="htcaas" password="htcaas" trust="true">
+			<fileset dir="dist">
+				<include name="HTCaaS.zip" />
+			</fileset>
+		</scp>
+		<sshexec host="150.183.158.190" port="22" username="htcaas" id="htcaas" password="htcaas" trust="true" command="unzip -o /home/htcaas/workspace/HTCaaS.zip -d /home/htcaas/workspace/" />
+		<delete file="${dist.dir}/HTCaaS.zip" />
+	</target>
+</project>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Constant" default="compile" basedir=".">
+
+	<property name="name" value="constant" />
+	<property name="release" value="${name}" />
+
+	<property name="src.dir" value="src/org/kisti/htc/constant" />
+	<property name="build.dir" value="build/Constant" />
+	<property name="build.dir2" value="build" />
+	<property name="dist.dir" value="dist" />
+	<property name="jar.name" value="constant.jar" />
+	<property name="jar.path" location="${dist.dir}/${jar.name}" />
+	<property name="zip.name" value="${release}.zip" />
+	<property name="zip.path" location="${dist.dir}/${zip.name}" />
+
+	<path id="classpath">
+		<pathelement location="${build.dir}" />
+	</path>
+
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="compile" depends="prepare">
+		<javac srcdir="${src.dir}" destdir="${build.dir}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${jar.path}" basedir="${build.dir}">
+		</jar>
+	</target>
+	<target name="jar2">
+                <mkdir dir="${dist.dir}" />
+                <jar destfile="${jar.path}" basedir="${build.dir2}">
+                </jar>
+        </target>
+
+	
+</project>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Agent" default="compile" basedir=".">
+	
+	<property name="name" value="agent" />
+	<property name="release" value="${name}" />
+	
+	<property name="src.dir" value="src/org/kisti/htc/agent" />
+	<property name="src1.dir" value="src/org/kisti/htc/message" />
+	<property name="src2.dir" value="src/org/kisti/htc/constant" />
+	<property name="src3.dir" value="src/util" />
+	<property name="build.dir" value="build/Agent" />
+	<property name="build.dir2" value="build" />
+	<property name="lib.dir" value="lib/Agent" />
+	<property name="slib.dir" value="lib/shared" />
+	<property name="conf.dir" value="conf/Agent" />
+	<property name="dist.dir" value="dist" />
+	<property name="jar.name" value="agent.jar" />
+	<property name="jar.path" location="${dist.dir}/${jar.name}" />
+	<property name="zip.name" value="${release}.zip" />
+	<property name="zip.path" location="${dist.dir}/${zip.name}" />
+	<property environment="env" />
+			
+	<path id="classpath">
+		<pathelement location="${build.dir}" />
+		<pathelement location="${conf.dir}" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${slib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+		
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+	</target>
+	
+	<target name="pre_compile" depends="prepare">
+	    <javac srcdir="${src3.dir}" destdir="${build.dir}">
+	              <classpath refid="classpath" />
+	    </javac>    
+	    <javac srcdir="${src2.dir}" destdir="${build.dir}">
+	          <classpath refid="classpath" />
+	    </javac>
+	    <javac srcdir="${src1.dir}" destdir="${build.dir}">
+	      <classpath refid="classpath" />
+	    </javac>
+	</target>
+	
+	<target name="compile" depends="pre_compile">
+		<javac srcdir="${src.dir}" destdir="${build.dir}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${dist.dir}" />
+		<delete dir="${build.dir}" />
+	</target>
+	
+	<target name="jar" depends="compile">
+		<mkdir dir="${dist.dir}"/>
+		<jar destfile="${jar.path}" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="org.kisti.htc.agent.Agent" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="jar2">
+                <mkdir dir="${dist.dir}"/>
+                <jar destfile="${jar.path}" basedir="${build.dir2}">
+                        <manifest>
+                                <attribute name="Main-Class" value="org.kisti.htc.agent.Agent" />
+                        </manifest>
+                </jar>
+        </target>
+	
+	<target name="zip" depends="jar2">
+		<zip destfile="${zip.path}">
+			<zipfileset dir="${conf.dir}"  prefix="${release}">
+				<include name="run.xml" />
+			</zipfileset>
+			<zipfileset dir="${dist.dir}" includes="${jar.name}" prefix="${release}/dist" />
+			<zipfileset dir="${lib.dir}" prefix="${release}/lib">
+				<include name="**/*.jar" />
+			</zipfileset>
+<!--			<zipfileset dir="${slib.dir}" prefix="${release}/lib">
+				<include name="**/*.jar" />
+			</zipfileset>
+-->
+			<zipfileset dir="conf" prefix="${release}/conf">
+				<include name="HTCaaS_Client.conf" />
+				<include name="Agent/log4j.properties" />
+				<include name="Agent/run.xml" />
+			</zipfileset>
+			<zipfileset dir="apache-ant-1.8.1" prefix="${release}/apache-ant-1.8.1">
+				<include name="**/*" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="run" depends="jar">
+        <java classname="org.kisti.htc.agent.Agent" fork="true">
+            <classpath>
+            	<path refid="classpath" />
+            	<path location="${jar.path}"/>
+            </classpath>
+        </java>
+	</target>
+	
+	<target name="deploy-zip" depends="zip">		
+		<copy file="${zip.path}" tofile="${env.HTTP_HOME}/html/${env.HTCaaS_Storage}/${zip.name}" overwrite="true" />
+	</target>
+	
+</project>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="AgentManager" default="compile" basedir=".">
+
+	<property name="name" value="agentmanager" />
+	<property name="release" value="${name}" />
+
+	<property name="src.dir" value="src/org/kisti/htc/agentmanager" />
+	<property name="src1.dir" value="src/org/kisti/htc/message" />
+	<property name="src2.dir" value="src/org/kisti/htc/constant" />
+	<property name="src3.dir" value="src/util" />
+	<property name="build.dir" value="build/AgentManager" />
+	<property name="lib.dir" value="lib/AgentManager" />
+	<property name="slib.dir" value="lib/shared" />
+	<property name="conf.dir" value="conf/AgentManager" />
+	<property name="conf1.dir" value="conf" />
+	<property name="dist.dir" value="dist" />
+	<property name="jar.name" value="agentmanager.jar" />
+	<property name="jar.path" location="${dist.dir}/${jar.name}" />
+	<property name="zip.name" value="${release}.zip" />
+	<property name="zip.path" location="${dist.dir}/${zip.name}" />
+
+	<path id="classpath">
+		<pathelement location="${build.dir}" />
+		<pathelement location="${conf.dir}" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${slib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="pre_compile" depends="prepare">
+		<javac srcdir="${src3.dir}" destdir="${build.dir}">
+		          <classpath refid="classpath" />
+		</javac>		
+		<javac srcdir="${src2.dir}" destdir="${build.dir}">
+		      <classpath refid="classpath" />
+		</javac>
+		<javac srcdir="${src1.dir}" destdir="${build.dir}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="compile" depends="pre_compile">
+		<javac srcdir="${src.dir}" destdir="${build.dir}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="run" depends="compile">
+		<java classname="org.kisti.htc.agentmanager.AgentManager" fork="true">
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${jar.path}" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="org.kisti.htc.agentmanager.AgentManager" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="zip" depends="jar">
+		<zip destfile="${zip.path}">
+			<zipfileset dir="${conf.dir}" prefix="${release}">
+				<include name="run.xml" />
+				<include name="*.sh" />
+			</zipfileset>
+			<zipfileset dir="${dist.dir}" includes="${jar.name}" prefix="${release}/dist" />
+			<zipfileset dir="${lib.dir}" prefix="${release}/lib">
+				<include name="**/*.jar" />
+			</zipfileset>
+			<zipfileset dir="${slib.dir}" prefix="${release}/lib">
+				<include name="**/*.jar" />
+			</zipfileset>
+			<zipfileset dir="script" prefix="${release}/script">
+				<include name="**/*.*" />
+				<include name="**/*" />
+			</zipfileset>
+			<zipfileset dir="conf" prefix="${release}/conf">
+				<include name="HTCaaS_Server.conf" />
+				<include name="AgentManager/**/*" />
+				<include name="AgentManager/**/*.*" />
+			</zipfileset>
+			<zipfileset dir="apache-ant-1.8.1" prefix="${release}/apache-ant-1.8.1">
+				<include name="**/*" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="deployToKenobi" depends="zip">
+		<scp todir="seungwoo@kenobi.kisti.re.kr:/home/seungwoo/workspace" port="6980" id="seungwoo" password="shtmddn" trust="true">
+			<fileset dir="dist">
+				<include name="agentmanager.zip" />
+			</fileset>
+		</scp>
+		<sshexec host="kenobi.kisti.re.kr" port="6980" username="seungwoo" id="seungwoo" password="shtmddn" trust="true" command="unzip -o /home/seungwoo/workspace/agentmanager.zip -d /home/seungwoo/workspace/" />
+		<!--<sshexec host="pearl.kisti.re.kr" port="6980" username="seungwoo" keyfile="/home/seungwoo/.ssh/id_rsa" trust="true" command="chmod +x /usr/local/HTCaaS/HTCaaSClient/client/script/*" />
+			-->
+		<delete file="${dist.dir}/agentmanager.zip" />
+		<delete file="${dist.dir}/agentmanager.jar" />
+	</target>
+	
+	<target name="deployToHTCaaS" depends="zip">
+			<scp todir="seungwoo@150.183.225.215:/home/seungwoo/workspace" port="6980" id="seungwoo" password="shtmddn" trust="true">
+				<fileset dir="dist">
+					<include name="agentmanager.zip" />
+				</fileset>
+			</scp>
+			<sshexec host="150.183.225.215" port="6980" username="seungwoo" id="seungwoo" password="shtmddn" trust="true" command="unzip -o /home/seungwoo/workspace/agentmanager.zip -d /home/seungwoo/workspace/" />
+			<!--<sshexec host="pearl.kisti.re.kr" port="6980" username="seungwoo" keyfile="/home/seungwoo/.ssh/id_rsa" trust="true" command="chmod +x /usr/local/HTCaaS/HTCaaSClient/client/script/*" />
+				-->
+			<delete file="${dist.dir}/agentmanager.zip" />
+			<delete file="${dist.dir}/agentmanager.jar" />
+		</target>
+
+	
+	
+</project>

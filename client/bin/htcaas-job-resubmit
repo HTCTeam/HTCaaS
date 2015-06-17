@@ -1,0 +1,4 @@
+#!/bin/bash
+
+$HTCaaS_Client/build/run_resubmitmetajob.sh $1 $2 $3 $4 $5 $6 
+

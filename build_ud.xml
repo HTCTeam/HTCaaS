@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="udmanager" default="compile" basedir=".">
+	
+	<property environment="env"/>
+
+	<property name="name" value="udmanager" />
+	<property name="release" value="${name}" />
+	<property name="src.dir" value="src/org/kisti/htc/udmanager" />
+	<property name="src2.dir" value="src/org/kisti/htc/constant" />
+	<property name="src3.dir" value="src/util" />
+	<property name="build.dir" value="build/UDManager" />
+	<property name="build.dir2" value="build" />
+	<property name="lib.dir" value="lib/UDManager" />
+	<property name="slib.dir" value="lib/shared" />
+	<property name="conf.dir" value="conf/UDManager" />
+	<property name="dist.dir" value="dist" />
+	
+	<property name="jar.name" value="udmanager.jar" />
+	<property name="jar.path" location="${dist.dir}/${jar.name}" />
+
+    <property name="cxf.home" value="${env.CXF_HOME}"/>
+	
+	<path id="classpath">
+		<pathelement location="${build.dir}" />
+		<pathelement location="${conf.dir}" />
+        <pathelement location="${cxf.home}/lib/cxf-manifest.jar"/>
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${slib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+		
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+	</target>
+	
+	<target name="pre_compile" depends="prepare">
+	      <javac srcdir="${src2.dir}" destdir="${build.dir}">
+	                <classpath refid="classpath" />
+	      </javac>    
+	      <javac srcdir="${src3.dir}" destdir="${build.dir}">
+	                <classpath refid="classpath" />
+	      </javac>    
+
+  </target>
+
+	
+	<target name="compile" depends="pre_compile">
+		<javac srcdir="${src.dir}" destdir="${build.dir}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+				
+	<target name="generate.interface" depends="compile">
+		<mkdir dir="${dist.dir}"/>
+		<jar destfile="${jar.path}">	
+			<fileset dir="${build.dir}">
+				<include name="org/kisti/htc/udmanager/bean/DataHandlerFile.class" />
+				<include name="org/kisti/htc/udmanager/server/UserDataManager.class" />
+				<include name="org/kisti/htc/udmanager/server/ChecksumChecker.class" />
+				<include name="org/kisti/htc/udmanager/client/UDClient.class" />
+			</fileset>
+		</jar>
+		<copy file="${jar.path}" tofile="lib/Application/${jar.name}" overwrite="true" />
+		<copy file="${jar.path}" tofile="lib/Agent/${jar.name}" overwrite="true" />
+		<copy file="${jar.path}" tofile="lib/AgentManager/${jar.name}" overwrite="true" />
+		<copy file="${jar.path}" tofile="lib/JobManager/${jar.name}" overwrite="true" />	
+		<copy file="${jar.path}" tofile="lib/cli/${jar.name}" overwrite="true" />
+	</target>
+
+	<target name="generate.interface2">
+                <mkdir dir="${dist.dir}"/>
+                <jar destfile="${jar.path}">
+                        <fileset dir="${build.dir2}">
+                                <include name="org/kisti/htc/udmanager/bean/DataHandlerFile.class" />
+                                <include name="org/kisti/htc/udmanager/server/UserDataManager.class" />
+                                <include name="org/kisti/htc/udmanager/server/ChecksumChecker.class" />
+                                <include name="org/kisti/htc/udmanager/client/UDClient.class" />
+                        </fileset>
+                </jar>
+                <copy file="${jar.path}" tofile="lib/Application/${jar.name}" overwrite="true" />
+                <copy file="${jar.path}" tofile="lib/Agent/${jar.name}" overwrite="true" />
+                <copy file="${jar.path}" tofile="lib/AgentManager/${jar.name}" overwrite="true" />
+                <copy file="${jar.path}" tofile="lib/JobManager/${jar.name}" overwrite="true" />
+                <copy file="${jar.path}" tofile="lib/cli/${jar.name}" overwrite="true" />
+        </target>
+
+	<target name="run" depends="compile">
+        <java classname="org.kisti.htc.udmanager.server.Server" fork="true">
+            <classpath>
+            	<path refid="classpath" />
+            	<path location="${jar.path}"/>
+            </classpath>
+        </java>
+	</target>
+	
+	<target name="scpToPearl">
+		<scp todir="root@pearl.kisti.re.kr:/root/UDManager/src/org/kisti/htc/udmanager" port="6980" keyfile="/home/seungwoo/.ssh/id_rsa">
+			<fileset dir="src/org/kisti/htc/udmanager">
+				<include name="**/*.java"/>
+			</fileset>
+		</scp>
+		<scp todir="root@pearl.kisti.re.kr:/root/UDManager/conf/UDManager" port="6980" keyfile="/home/seungwoo/.ssh/id_rsa">
+			<fileset dir="conf/UDManager">
+				<include name="**/log.*"/>	
+			</fileset>
+		</scp>
+		<scp todir="root@pearl.kisti.re.kr:/root/UDManager/conf" port="6980" keyfile="/home/seungwoo/.ssh/id_rsa">
+			<fileset dir="conf">
+				<include name="*.conf"/>	
+			</fileset>
+		</scp>
+		<scp todir="root@pearl.kisti.re.kr:/root/UDManager" port="6980" keyfile="/home/seungwoo/.ssh/id_rsa">
+			<fileset dir=".">
+				<include name="build_ud.xml"/>	
+				<include name="UDManager"/>
+			</fileset>
+		</scp>
+		<scp todir="root@pearl.kisti.re.kr:/root/UDManager/lib/UDManager" port="6980" keyfile="/home/seungwoo/.ssh/id_rsa">
+			<fileset dir="lib/UDManager">
+				<include name="**/*.jar"/>	
+			</fileset>
+		</scp>
+		<scp todir="root@pearl.kisti.re.kr:/root/UDManager/lib/shared" port="6980" keyfile="/home/seungwoo/.ssh/id_rsa">
+			<fileset dir="lib/shared">
+				<include name="**/cxf*.jar"/>
+				<include name="**/log*.jar"/>
+				<include name="**/slf*.jar"/>
+			</fileset>
+		</scp>
+		<sshexec host="pearl.kisti.re.kr" port="6980" username="root" keyfile="/home/seungwoo/.ssh/id_rsa" trust="true" command="chmod +x /root/UDManager/UDManager" />
+	</target>
+</project>

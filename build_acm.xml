@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="acmanager" default="compile" basedir=".">
+
+	<property environment="env" />
+
+	<property name="name" value="acmanager" />
+	<property name="release" value="${name}" />
+	<property name="src.dir" value="src/org/kisti/htc/acmanager" />
+	<property name="src3.dir" value="src/util" />
+	<property name="build.dir" value="build/ACManager" />
+	<property name="build.dir2" value="build" />
+	<property name="lib.dir" value="lib/ACManager" />
+	<property name="slib.dir" value="lib/shared" />
+	<property name="conf.dir" value="conf/AccountManager" />
+	<property name="dist.dir" value="dist" />
+
+	<property name="jar.name" value="${name}.jar" />
+	<property name="jar.path" location="${dist.dir}/${jar.name}" />
+
+
+	<property name="cxf.home" value="${env.CXF_HOME}" />
+
+	<path id="classpath">
+		<pathelement location="${build.dir}" />
+		<pathelement location="${conf.dir}" />
+		<pathelement location="${cxf.home}/lib/cxf-manifest.jar" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${slib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="pre_compile" depends="prepare">
+	    <javac srcdir="${src3.dir}" destdir="${build.dir}">
+	              <classpath refid="classpath" />
+	    </javac>    
+	</target>
+
+	
+	<target name="compile" depends="pre_compile">
+	  <property name="myclasspath" refid="classpath"/>
+	  <echo message="Classpath = ${myclasspath}"/>
+
+		<javac srcdir="${src.dir}" destdir="${build.dir}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="generate.interface" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${jar.path}">
+			<fileset dir="${build.dir}">
+				<include name="org/kisti/htc/acmanager/server/*.class" />
+				<include name="org/kisti/htc/acmanager/client/*.class" />
+			</fileset>
+		</jar>
+		<copy file="${jar.path}" tofile="lib/Agent/${jar.name}" overwrite="true" />
+		<copy file="${jar.path}" tofile="lib/cli/${jar.name}" overwrite="true" />
+	</target>
+
+	<target name="generate.interface2" >
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${jar.path}">
+			<fileset dir="${build.dir2}">
+				<include name="org/kisti/htc/acmanager/server/*.class" />
+				<include name="org/kisti/htc/acmanager/client/*.class" />
+			</fileset>
+		</jar>
+		<copy file="${jar.path}" tofile="lib/Agent/${jar.name}" overwrite="true" />
+		<copy file="${jar.path}" tofile="lib/cli/${jar.name}" overwrite="true" />
+	</target>
+
+	<target name="run" depends="compile">
+
+	  <!-- Capture the path as a delimited property using the refid attribute -->
+	  <property name="myclasspath" refid="classpath"/>
+	  <!-- Emit the property to the ant console -->
+	  <echo message="Classpath = ${myclasspath}"/>
+
+		<java classname="org.kisti.htc.acmanager.server.Server" fork="true">
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</java>
+	</target>
+
+</project>

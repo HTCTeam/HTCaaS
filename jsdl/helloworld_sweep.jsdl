@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<JobDefinition xmlns="http://schemas.ggf.org/jsdl/2005/11/jsdl" xmlns:ns2="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix" xmlns:ns3="http://schemas.ogf.org/jsdl/2009/03/sweep">
+    <JobDescription>
+        <Application>
+            <ApplicationName>general</ApplicationName>
+            <ns2:POSIXApplication>
+                <ns2:Executable>hello_sweep.sh</ns2:Executable>
+            	<ns2:Argument>EXPNUM</ns2:Argument>
+			</ns2:POSIXApplication>
+        </Application>
+        <DataStaging>
+            <FileName>hello_sweep.sh</FileName>
+            <Source>
+                <URI>/usr/local/htcaas_app/hello/hello_sweep.sh</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>hello.run</FileName>
+            <Source>
+                <URI>/usr/local/htcaas_app/hello/hello_sweep.sh</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>hello_sweep.EXPNUM.out</FileName>
+            <Target>
+                <URI>/home/p258rsw/output/hello_sweep.EXPNUM.out</URI>
+            </Target>
+        </DataStaging>
+    </JobDescription>
+	
+	<ns3:Sweep>
+        <ns3:Assignment>
+			<ns3:DocumentNode>
+				<ns3:Match>EXPNUM</ns3:Match>
+			</ns3:DocumentNode>
+			<ns3:LoopInteger step="1" end="1" start="1"/>
+		</ns3:Assignment>
+	</ns3:Sweep>
+	
+</JobDefinition>
+
+

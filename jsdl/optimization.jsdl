@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<JobDefinition xmlns="http://schemas.ggf.org/jsdl/2005/11/jsdl" xmlns:ns2="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix" xmlns:ns3="http://schemas.ogf.org/jsdl/2009/03/sweep">
+    <JobDescription>
+        <Application>
+            <ApplicationName>optimization</ApplicationName>
+            <ns2:POSIXApplication>
+                <ns2:Executable>run.sh</ns2:Executable>
+                <ns2:Argument>5d-hp-new.para</ns2:Argument>
+                <ns2:Argument>EXPNUM</ns2:Argument>
+            </ns2:POSIXApplication>
+        </Application>
+        <DataStaging>
+            <FileName>5d-hp-new.para</FileName>
+            <CreationFlag>overwrite</CreationFlag>
+            <Source>
+                <URI>/home/seungwoo/optimization/5d-hp-new.para</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>install.sh</FileName>
+            <Source>
+                <URI>/home/seungwoo/optimization/install.sh</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>run.sh</FileName>
+            <Source>
+                <URI>/home/seungwoo/optimization/run.sh</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>isomap.zip</FileName>
+            <Source>
+                <URI>/home/seungwoo/optimization/isomap.zip</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>5d-hp-new.para.kEXPNUM</FileName>
+            <Target>
+                <URI>/home/seungwoo/optimization/5d-hp-new.para.kEXPNUM</URI>
+            </Target>
+        </DataStaging>
+    </JobDescription>
+    <ns3:Sweep>
+        <ns3:Assignment>
+            <ns3:DocumentNode>
+                <ns3:Match>EXPNUM</ns3:Match>
+            </ns3:DocumentNode>
+            <ns3:LoopInteger step="1" end="5" start="1"/>
+        </ns3:Assignment>
+    </ns3:Sweep>
+</JobDefinition>

@@ -1,0 +1,11 @@
+use htcaas_server;
+DELETE FROM agent;
+alter table agent auto_increment = 1;
+delete from metajob;
+alter table metajob auto_increment = 1;
+delete from job;
+alter table job auto_increment = 1;
+delete from result;
+alter table result auto_increment = 1;
+delete from submiterror;
+alter table submiterror auto_increment = 1;

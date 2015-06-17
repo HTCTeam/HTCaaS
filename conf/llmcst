@@ -1,0 +1,219 @@
+#!/bin/sh
+
+
+LL_REC_NAME[1]="kisti.pgaia"
+LL_REC_NAME[2]="kisti.pgaia2"
+LL_REC_NAME[3]="kisti.porion"
+LL_REC_NAME[4]="kisti.glory"
+LL_REC_NAME[5]="kisti.baekdusan"
+LL_REC_NAME[6]="kisti.solbaram"
+LL_REC_NAME[7]="kisti.ptachyon"
+LL_REC_NAME[8]="gist.kigi"
+LL_REC_NAME[9]="pku.hamel"
+LL_REC_NAME[10]="pnu.daisy"
+LL_REC_NAME[11]="unist.cheetah"
+LL_REC_NAME[12]="unist.unist_smp"
+LL_REC_NAME[13]="kobic.kobic"
+LL_REC_NAME[14]="kku.ci"
+LL_REC_NAME[15]="tu.tusmp"
+LL_REC_NAME[16]="uos.t2c"
+
+PTACHYON[1]="tachyona"
+PTACHYON[2]="tachyonb"
+PTACHYON[3]="tachyonc"
+PTACHYON[4]="tachyond"
+
+TMPFILE=`mktemp -p /tmp tmp_ll.XXXXXX`
+
+SGE_STAT_OUT="/tmp/sge_status.out"
+
+CNT=`expr $CNT + 0`
+ROW=`expr $CNT + 5`
+MSG=""
+
+
+
+
+
+trap 'rm -f $TMPFILE ; exit 0 ;' EXIT TERM INT
+
+
+function view_summary()
+{
+	if [  "$1" != "kisti.pgaia" -a  "$1" != "kisti.pgaia2"  ]
+	then
+		cat ${TMPFILE} | egrep "ConsumableCpus|no job status|job step\(s\)"  | awk -v LL_NAME=$1 'BEGIN{ total = 0 ; available=0; tjob=0; wait=0; pending=0; runing=0; node_cnt=0; } 
+				/ConsumableCpus/ { 
+					v_s = index($0,"(") ;
+					v_e = index($0,")") ;
+					tmp_v = substr( $0, v_s + 1, v_e - v_s - 1 );
+					split( tmp_v, tmp_arr, ",");
+					available += tmp_arr[1] ;
+					total += tmp_arr[2];
+					node_cnt++;
+				}
+				/no job status/ {
+					tjob=0;
+					wait=0;
+					pending=0;
+					runing=0;
+				}
+				/job step\(s\)/ {
+					tjob=$1;
+					wait=$6;
+					pending=$8;
+					runing=$10;
+				}
+			
+				END{
+					printf "%s %d %d %d %d %d %d", LL_NAME, node_cnt, available, total, wait,pending,runing  ;
+				}' 
+
+	else
+		cat ${TMPFILE} | egrep "ConsumableCpus|no job status|job step\(s\)|Total Machines"  | awk -v LL_NAME=$1 'BEGIN{ total = 0 ; available=0; tjob=0; wait=0; pending=0; runing=0; node_cnt=0; } 
+				/ConsumableCpus/ {
+					split($0 ,tmp_array1, "ConsumableCpus");
+					avail_s = index($0,"<") ;
+				 	avail_e = index($0,">") ;
+					tmp_v = substr( $0, avail_e  + 1);
+					total_s = index(tmp_v,"<") ;
+					total_e = index(tmp_v,">") ;
+					avail_t = substr( $0,avail_s+1,  avail_e - avail_s -1 );
+					total_t  = substr(tmp_v,total_s+1,  total_e - total_s  -1);
+					avail_array_count = split(avail_t,avail_array," ");
+					avail_count = 0 ;
+					for ( j = 1 ; j <= avail_array_count ; j++ )
+					{
+						if ( avail_array[j] != "" )
+                        			{
+                                			avail_array_sub_count = split( avail_array[j], avail_array_sub, "-" );
+                                			if ( avail_array_sub_count == 1   )
+                                			{
+                                        			avail_count++;
+                                			}
+                                			else
+                                			{
+                                        			for ( k =1 ; k <= avail_array_sub_count ; k++ )
+								{
+                                                			tmp_end = avail_array_sub[2];
+                                                			tmp_start = avail_array_sub[1];
+                                        			}
+                                        			avail_count += ( tmp_end - tmp_start + 1 );
+                                			}
+                        			}
+					}
+
+                			total_array_count = split(total_t,total_array," ");
+                			total_count = 0 ;
+                			for ( j = 1 ; j <= total_array_count ; j++ )
+                			{
+                        			if ( total_array[j] != "" )
+                        			{
+                                			total_array_sub_count = split( total_array[j], total_array_sub, "-" );
+                                			if ( total_array_sub_count == 1   )
+                                			{
+                                        			total_count++;
+                                			}
+                                			else
+                                			{
+                                        			for ( k =1 ; k <= total_array_sub_count ; k++ )
+                                        			{
+                                                			tmp_end = total_array_sub[2];
+                                                			tmp_start = total_array_sub[1];
+                                        			}
+                                        			total_count += ( tmp_end - tmp_start + 1 );
+                                			}
+                        			}
+
+                			}
+					available += avail_count;
+					total += total_count;
+					node_cnt++;
+				}
+				/Total Machines/ {
+					node_cnt = $3
+					available = total - $7	
+				}
+				/no job status/ {
+					tjob=0;
+					wait=0;
+					pending=0;
+					runing=0;
+				}
+				/job step\(s\)/ {
+					tjob=$1;
+					wait=$6;
+					pending=$8;
+					runing=$10;
+				}
+			
+				END{
+					printf "%s %d %d %d %d %d %d", LL_NAME, node_cnt, available, total, wait,pending,runing  ;
+				}' 
+	fi
+	
+}
+
+
+
+
+
+
+echo " "
+echo "--------------------------[[ PLSI COMPUTING RESOURCES ]]----------------------------"
+echo " "
+echo "----------------  ------------  ---------------------  -----------------------------"
+echo "Cluster Name      Nodes(Total)  Cpus(Available/Total)  Jobs(Waiting/Pending/Running)"
+echo "----------------  ------------  ---------------------  -----------------------------"
+
+T_NODE_CNT=0
+T_AVAILABLE=0
+T_TOTAL=0
+T_WAIT=0
+T_PENDING=0
+T_RUNING=0
+		
+for c_name in  ${LL_REC_NAME[*]}
+do
+	if [ "$c_name" != "kisti.ptachyon" ]
+	then
+
+		llstatus -X ${c_name} -R >  ${TMPFILE}
+		if [  "$c_name" = "kisti.pgaia" -o  "$c_name" = "kisti.pgaia2"  ]
+		then
+			llstatus -X ${c_name} | grep "Total Machines" >> ${TMPFILE}
+		fi
+		llq -X ${c_name} | egrep "no job status|job step\(s\)" >>  ${TMPFILE}
+		VAL=`view_summary ${c_name}`
+	else
+		VAL=`cat ${SGE_STAT_OUT}`
+	fi
+
+	if [ "${VAL}" != "" ]
+	then
+	echo $VAL | awk '{printf "%16s        %5d            %5d/%5d          %5d/  %5d/  %5d\n", $1, $2, $3, $4, $5, $6, $7 ;}'
+
+		NODE_CNT=`echo $VAL | awk '{print $2}'`
+		AVAILABLE=`echo $VAL | awk '{print $3}'`
+		TOTAL=`echo $VAL | awk '{print $4}'`
+		WAIT=`echo $VAL | awk '{print $5}'`
+		PENDING=`echo $VAL | awk '{print $6}'`
+		RUNING=`echo $VAL | awk '{print $7}'`
+
+		T_NODE_CNT=`expr $NODE_CNT + $T_NODE_CNT`
+		T_AVAILABLE=`expr $AVAILABLE + $T_AVAILABLE`
+		T_TOTAL=`expr $TOTAL + $T_TOTAL`
+		T_WAIT=`expr $WAIT + $T_WAIT`
+		T_PENDING=`expr $PENDING + $T_PENDING`
+		T_RUNING=`expr $RUNING + $T_RUNING`
+	fi
+
+done
+
+echo "----------------  ------------  ---------------------  -----------------------------"
+echo $T_NODE_CNT " " $T_AVAILABLE " " $T_TOTAL " " $T_WAIT " " $T_PENDING " " $T_RUNING | awk '{ printf "Total                   %5d            %5d/%5d          %5d/  %5d/  %5d\n", $1, $2, $3, $4, $5, $6 }'
+echo "----------------  ------------  ---------------------  -----------------------------"
+
+
+rm -f $TMPFILE
+

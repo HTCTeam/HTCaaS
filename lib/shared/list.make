@@ -1,0 +1,14 @@
+echo ========================== activemq-all-5.3.2.jar
+jar tvf activemq-all-5.3.2.jar
+echo ========================== cxf-2.2.8.jar
+jar tvf cxf-2.2.8.jar
+echo ========================== dbmanager.jar
+jar tvf dbmanager.jar
+echo ========================== log4j-1.2.16.jar
+jar tvf log4j-1.2.16.jar
+echo ========================== mail-1.4.3.jar
+jar tvf mail-1.4.3.jar
+echo ========================== slf4j-api-1.5.8.jar
+jar tvf slf4j-api-1.5.8.jar
+echo ========================== slf4j-log4j12-1.5.8.jar
+jar tvf slf4j-log4j12-1.5.8.jar

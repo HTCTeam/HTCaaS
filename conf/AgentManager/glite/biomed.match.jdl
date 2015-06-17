@@ -1,0 +1,6 @@
+Type = "Job";
+VirtualOrganisation = "biomed";
+JobType = "Normal";
+Executable = "/bin/sh";
+RetryCount = 0;
+

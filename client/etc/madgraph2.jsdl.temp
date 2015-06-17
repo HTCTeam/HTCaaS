@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <JobDefinition xmlns="http://schemas.ggf.org/jsdl/2005/11/jsdl" xmlns:ns2="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix" xmlns:ns3="http://schemas.ogf.org/jsdl/2009/03/sweep">
+        <JobDescription>
+                <Application>
+                        <ApplicationName>mg5_amc</ApplicationName>
+                        <ns2:POSIXApplication>
+                                <ns2:Executable>run.sh</ns2:Executable>
+                                <ns2:Argument>DIR</ns2:Argument>
+                                <ns2:Argument>EXE</ns2:Argument> %ARGS1%
+                        </ns2:POSIXApplication>
+                </Application>
+                <DataStaging>
+                        <FileName>run.sh</FileName>
+                        <Source>
+                                <URI>/usr/local/htcaas_app/MG5_v2_1_1/run.sh</URI>
+                        </Source>
+                </DataStaging>
+        </JobDescription>
+   <ns3:Sweep>
+        <ns3:Assignment>
+                <ns3:DocumentNode>
+                        <ns3:Match>DIR</ns3:Match>
+                </ns3:DocumentNode>
+                <ns3:Values>%TEMPDIR% 
+                </ns3:Values>
+        </ns3:Assignment>
+        <ns3:Assignment>
+                <ns3:DocumentNode>
+                        <ns3:Match>EXE</ns3:Match>
+                </ns3:DocumentNode>
+                <ns3:Values> %TEMPEXE%
+                </ns3:Values>
+        </ns3:Assignment> %ARGS2%
+    </ns3:Sweep>
+
+  </JobDefinition>
+

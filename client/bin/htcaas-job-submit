@@ -1,0 +1,15 @@
+#!/bin/bash
+if [ $1=-f ]
+then
+    if [ "${2:0:1}" == "/" ]
+    then
+        ab=$2
+    else
+        ab=$PWD'/'$2
+    fi  
+   # chmod +x $HTCaaS_Client/build/run_submitmetajob.sh
+	$HTCaaS_Client/build/run_submitmetajob.sh $1 $ab $3 $4 $5 $6 
+else
+    #chmod +x $HTCaaS_Client/build/run_submitmetajob.sh
+	$HTCaaS_Client/build/run_submitmetajob.sh $1 $2 $3 $4 $5 $6
+fi

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<JobDefinition xmlns="http://schemas.ggf.org/jsdl/2005/11/jsdl" xmlns:ns2="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix" xmlns:ns3="http://schemas.ogf.org/jsdl/2009/03/sweep">
+    <JobDescription>
+        <Application>
+            <ApplicationName>autodock3</ApplicationName>
+            <ns2:POSIXApplication>
+                <ns2:Executable>autodock_vina.sh</ns2:Executable>
+                <ns2:Argument>TARGET</ns2:Argument>
+                <ns2:Argument>LIGAND</ns2:Argument>
+                <ns2:Argument>SUBDIR</ns2:Argument>
+            </ns2:POSIXApplication>
+        </Application>
+        <DataStaging>
+            <FileName>LIGAND.pdbqt</FileName>
+            <Source>
+                <URI>/htcaas/p330ksw/test/ligand/LIGAND.pdbqt</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>TARGET.pdbqt</FileName>
+            <CreationFlag>overwrite</CreationFlag>
+            <Source>
+                <URI>/htcaas/p330ksw/test/proteins/SUBDIR/TARGET.pdbqt</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>autodock_vina.sh</FileName>
+            <Source>
+                <URI>/usr/local/htcaas_app/autodock_vina/autodock_vina.sh</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>vina</FileName>
+            <Source>
+                <URI>/usr/local/htcaas_app/autodock_vina/vina</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>SUBDIR_LIGAND_TARGET.*</FileName>
+            <Target>
+                <URI>/htcaas/p330ksw/output_vina/SUBDIR_LIGAND_TARGET.tar</URI>
+            </Target>
+        </DataStaging>
+    </JobDescription>
+    <ns3:Sweep>
+        <ns3:Assignment>
+            <ns3:DocumentNode>
+                <ns3:Match>LIGAND</ns3:Match>
+            </ns3:DocumentNode>
+            <ns3:Directory filenameonly="true">
+                <ns3:Name>/htcaas/p330ksw/test/ligand</ns3:Name>
+            </ns3:Directory>
+        </ns3:Assignment>
+        <ns3:Sweep>
+            <ns3:Assignment>
+                <ns3:DocumentNode>
+                    <ns3:Match>TARGET</ns3:Match>
+                </ns3:DocumentNode>
+                <ns3:Directory filenameonly="true">
+                    <ns3:Name>/htcaas/p330ksw/test/proteins</ns3:Name>
+                </ns3:Directory>
+            </ns3:Assignment>
+        </ns3:Sweep>
+    </ns3:Sweep>
+</JobDefinition>

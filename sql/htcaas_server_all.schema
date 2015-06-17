@@ -1,0 +1,452 @@
+-- MySQL dump 10.13  Distrib 5.1.73, for redhat-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: htcaas_server
+-- ------------------------------------------------------
+-- Server version	5.1.73
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `agent`
+--
+
+DROP TABLE IF EXISTS `agent`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agent` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `endTimestamp` datetime DEFAULT NULL,
+  `gangaId` int(11) unsigned DEFAULT NULL,
+  `host` varchar(255) DEFAULT NULL,
+  `lastSignal` datetime DEFAULT NULL,
+  `log` longtext,
+  `numJobs` int(11) unsigned NOT NULL DEFAULT '0',
+  `quit` bit(1) NOT NULL DEFAULT b'0',
+  `runningTime` bigint(20) unsigned DEFAULT '0',
+  `runningTimestamp` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `submittedTimestamp` datetime DEFAULT NULL,
+  `waitingTime` bigint(20) unsigned DEFAULT '0',
+  `CE_id` int(11) unsigned DEFAULT NULL,
+  `user_id` bigint(20) unsigned DEFAULT NULL,
+  `currentJob` bigint(20) unsigned DEFAULT NULL,
+  `submitId` varchar(255) DEFAULT NULL,
+  `sleep` bit(1) NOT NULL DEFAULT b'0',
+  `flag` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`),
+  KEY `CE_id` (`CE_id`),
+  KEY `currentJob` (`currentJob`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `ce join` FOREIGN KEY (`CE_id`) REFERENCES `ce` (`id`),
+  CONSTRAINT `user join` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Agent 테이';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `agent_scaling_metric`
+--
+
+DROP TABLE IF EXISTS `agent_scaling_metric`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agent_scaling_metric` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Agent 스케일 메트릭 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `am_env`
+--
+
+DROP TABLE IF EXISTS `am_env`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `am_env` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `auto` bit(1) NOT NULL DEFAULT b'0',
+  `service_Infra_id` set('1','2','3','4','5','6','7','8','9','10') NOT NULL DEFAULT '',
+  `agentScalingMetric_id` tinyint(2) unsigned NOT NULL DEFAULT '5',
+  `ceSelectionMetric_id` tinyint(2) unsigned NOT NULL DEFAULT '1',
+  `addAgentNO` int(5) unsigned NOT NULL DEFAULT '0',
+  `statusMonitoringHP` tinyint(2) unsigned NOT NULL DEFAULT '1',
+  `thresholdMaxAgent` tinyint(2) unsigned NOT NULL DEFAULT '100',
+  `thresholdMinAgent` tinyint(2) unsigned NOT NULL DEFAULT '10',
+  `numAgentRunning` int(5) unsigned NOT NULL DEFAULT '1',
+  `numAgentSubmitFailure` int(5) unsigned NOT NULL DEFAULT '0',
+  `minAgentNO` int(5) unsigned NOT NULL DEFAULT '0',
+  `resourceAP` smallint(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `agentScalingMetric_id` (`agentScalingMetric_id`),
+  KEY `serviceInfraMetric_id` (`service_Infra_id`),
+  KEY `CESelectionMetric_id` (`ceSelectionMetric_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Agent Manager 관리 설정 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `application`
+--
+
+DROP TABLE IF EXISTS `application`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `application` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '응용 소프트웨어 번호',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '응용 소프트웨어 명',
+  `comment` varchar(2000) DEFAULT NULL COMMENT '비고',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '우선순위',
+  `useyn` tinyint(1) NOT NULL DEFAULT '1' COMMENT '사용유무',
+  `fdate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '등록일',
+  `fuserid` varchar(255) NOT NULL COMMENT '등록자',
+  `ldate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '최종수정일',
+  `luserid` varchar(255) NOT NULL DEFAULT '' COMMENT '최종수정자',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='어플리케이션';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `ce`
+--
+
+DROP TABLE IF EXISTS `ce`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ce` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `available` bit(1) NOT NULL,
+  `banned` bit(1) NOT NULL,
+  `priority` bigint(20) NOT NULL DEFAULT '0',
+  `availableUpdateTime` datetime DEFAULT NULL,
+  `lastUpdateTime` datetime DEFAULT NULL,
+  `maxRunningTime` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `runningTime` bigint(20) unsigned DEFAULT NULL,
+  `waitingTime` bigint(20) unsigned DEFAULT NULL,
+  `service_Infra_id` smallint(6) unsigned DEFAULT NULL,
+  `freeCPU` int(11) NOT NULL DEFAULT '0',
+  `totalCPU` int(11) NOT NULL DEFAULT '0',
+  `limitCPU` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `limitClass` varchar(20) NOT NULL DEFAULT '',
+  `numAgentRunning` int(11) unsigned NOT NULL DEFAULT '0',
+  `numAgentSubmitFailure` int(11) unsigned NOT NULL DEFAULT '0',
+  `numAgentSubmitTry` int(11) unsigned NOT NULL DEFAULT '0',
+  `submitCount` int(11) unsigned NOT NULL DEFAULT '0',
+  `selectCount` int(11) unsigned NOT NULL DEFAULT '0',
+  `runningJob` int(11) DEFAULT NULL,
+  `waitingJob` int(11) DEFAULT NULL,
+  `aliveAgent` int(11) NOT NULL DEFAULT '0',
+  `zeroCnt` smallint(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`,`service_Infra_id`),
+  KEY `service_Infra_id` (`service_Infra_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='계산자원 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `ce_selection_metric`
+--
+
+DROP TABLE IF EXISTS `ce_selection_metric`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ce_selection_metric` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='계산자원 선택 메트릭 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `description`
+--
+
+DROP TABLE IF EXISTS `description`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `description` (
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='GUI 설명 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `job`
+--
+
+DROP TABLE IF EXISTS `job`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `job` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `seq` int(11) unsigned DEFAULT NULL,
+  `name` varchar(255) NOT NULL DEFAULT 'none',
+  `errormsg` varchar(255) DEFAULT NULL,
+  `jobDetail` longtext,
+  `lastUpdateTime` datetime DEFAULT NULL,
+  `numResubmit` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `runningTime` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `startTimestamp` datetime DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `CE_id` int(11) unsigned DEFAULT NULL,
+  `metajob_id` bigint(20) unsigned DEFAULT NULL,
+  `agent_id` bigint(20) unsigned DEFAULT NULL,
+  `stop` bit(1) NOT NULL DEFAULT b'0',
+  `log` longtext,
+  PRIMARY KEY (`id`),
+  KEY `FK_agentId` (`agent_id`),
+  KEY `FK1239D58AA1BEF` (`metajob_id`),
+  KEY `FK1239DC04D53E5` (`CE_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='사용자 작업 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `metajob`
+--
+
+DROP TABLE IF EXISTS `metajob`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `metajob` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `JSDL` longtext,
+  `status` varchar(255) NOT NULL DEFAULT '',
+  `user_id` int(11) unsigned DEFAULT NULL,
+  `app_id` int(11) unsigned DEFAULT NULL,
+  `startTimestamp` datetime DEFAULT NULL,
+  `lastUpdateTime` datetime DEFAULT NULL,
+  `num` int(11) NOT NULL DEFAULT '0',
+  `total` int(11) unsigned NOT NULL DEFAULT '0',
+  `ces` varchar(255) DEFAULT NULL,
+  `aJobTime` int(11) unsigned NOT NULL DEFAULT '0',
+  `project_name` varchar(255) NOT NULL DEFAULT '',
+  `script_name` varchar(255) NOT NULL DEFAULT '',
+  `error` longtext,
+  PRIMARY KEY (`id`),
+  KEY `FK9C292B586C1DF41E` (`app_id`),
+  KEY `FK9C292B58B2BD78A5` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='사용자 메타작업 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `notice`
+--
+
+DROP TABLE IF EXISTS `notice`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `notice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `division` varchar(255) NOT NULL DEFAULT 'unknown',
+  `ver` varchar(255) NOT NULL DEFAULT '0',
+  `content` longtext NOT NULL,
+  `fdate` datetime DEFAULT NULL,
+  `ldate` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `result`
+--
+
+DROP TABLE IF EXISTS `result`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `result` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `LFN` varchar(255) DEFAULT NULL,
+  `job_id` bigint(20) unsigned DEFAULT NULL,
+  `metajob_id` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `job_id` (`job_id`),
+  KEY `metajob_id` (`metajob_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='작업 결과';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `server_env`
+--
+
+DROP TABLE IF EXISTS `server_env`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `server_env` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `value` varchar(255) NOT NULL DEFAULT '',
+  `content` longtext NOT NULL,
+  `comment` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='서버 환경 설정 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `server_manager`
+--
+
+DROP TABLE IF EXISTS `server_manager`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `server_manager` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `address` varchar(255) NOT NULL DEFAULT '',
+  `port` int(11) unsigned NOT NULL DEFAULT '22',
+  `status` varchar(255) NOT NULL DEFAULT '',
+  `command` varchar(255) NOT NULL DEFAULT '',
+  `lastUpdateTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='HTCaaS 서버 관리자 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `service_code`
+--
+
+DROP TABLE IF EXISTS `service_code`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `service_code` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `service` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='서비스 코드 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `service_infra`
+--
+
+DROP TABLE IF EXISTS `service_infra`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `service_infra` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `service_Code_id` int(11) unsigned DEFAULT NULL,
+  `priority` smallint(5) unsigned DEFAULT NULL COMMENT '서비스 인프라 우선순위, 큰 값이 높은 우선순위를 가짐',
+  `available` bit(1) NOT NULL DEFAULT b'0',
+  `runningAgentHP` smallint(5) unsigned NOT NULL DEFAULT '5',
+  `submittedAgentHP` smallint(5) unsigned NOT NULL DEFAULT '5',
+  `newAgentHP` smallint(5) unsigned NOT NULL DEFAULT '5',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `service_Code_id` (`service_Code_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='서비스 인프라 관리 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `submiterror`
+--
+
+DROP TABLE IF EXISTS `submiterror`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `submiterror` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `metajob_id` int(11) unsigned DEFAULT NULL,
+  `ceName` varchar(255) DEFAULT NULL,
+  `wmsName` varchar(255) DEFAULT NULL,
+  `errorMsg` longtext NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='작업 제출 에러 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `dn` varchar(255) DEFAULT NULL,
+  `userid` varchar(255) NOT NULL DEFAULT '',
+  `passwd` varchar(255) NOT NULL DEFAULT '',
+  `service_Infra_id` set('1','2','3','4','5','6','7','8','9','10') NOT NULL DEFAULT '',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `keepAgentNO` int(11) unsigned NOT NULL DEFAULT '0',
+  `otp_flag` tinyint(3) NOT NULL DEFAULT '0',
+  `ug_id` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `shared` bit(1) NOT NULL DEFAULT b'0' COMMENT 'use of shared directory',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `userid` (`userid`),
+  KEY `service_Infra_id` (`service_Infra_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='사용자 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user_group`
+--
+
+DROP TABLE IF EXISTS `user_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `fdate` datetime DEFAULT NULL,
+  `ldate` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='그룹 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `wms`
+--
+
+DROP TABLE IF EXISTS `wms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wms` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `available` bit(1) NOT NULL,
+  `banned` bit(1) NOT NULL,
+  `count` int(11) unsigned NOT NULL DEFAULT '0',
+  `lastUpdateTime` datetime DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `numCE` int(11) unsigned NOT NULL DEFAULT '0',
+  `responseTime` bigint(20) NOT NULL DEFAULT '0',
+  `service_Infra_id` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='그리드 WMS 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `wms_ce`
+--
+
+DROP TABLE IF EXISTS `wms_ce`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wms_ce` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `wms` int(11) unsigned NOT NULL DEFAULT '0',
+  `ce` int(11) unsigned NOT NULL DEFAULT '0',
+  `submitErrorNum` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='그리드 WMS-CE 테이블';
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2015-04-16 12:02:14

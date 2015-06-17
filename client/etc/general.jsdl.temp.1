@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <JobDefinition xmlns="http://schemas.ggf.org/jsdl/2005/11/jsdl" xmlns:ns2="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix" xmlns:ns3="http://schemas.ogf.org/jsdl/2009/03/sweep"> 
+  	<JobDescription>
+		<Application>
+			<ApplicationName>general</ApplicationName>
+			<ns2:POSIXApplication>
+				<ns2:Executable>%EXE%</ns2:Executable>
+				<ns2:Argument>%RNUM%</ns2:Argument>
+			</ns2:POSIXApplication>
+		</Application>
+		<DataStaging>
+			<FileName>%EXE%</FileName>
+			<Source>
+				<URI>/phome01/p260ksy/%EXE%</URI>
+ 			</Source>
+		</DataStaging>
+	</JobDescription>
+  </JobDefinition>

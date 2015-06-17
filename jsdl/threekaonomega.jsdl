@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<JobDefinition xmlns="http://schemas.ggf.org/jsdl/2005/11/jsdl" xmlns:ns2="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix" xmlns:ns3="http://schemas.ogf.org/jsdl/2009/03/sweep">
+
+    <JobDescription>
+        <Application>
+            <ApplicationName>general</ApplicationName>
+            <ns2:POSIXApplication>
+                <ns2:Executable>run.sh</ns2:Executable>
+                <ns2:Argument>1</ns2:Argument>
+                <ns2:Argument>6</ns2:Argument>
+                <ns2:Argument>6</ns2:Argument>
+                <ns2:Argument>VAR1</ns2:Argument>
+                <ns2:Argument>VAR2</ns2:Argument>
+                <ns2:Argument>VAR3</ns2:Argument>
+                <ns2:Argument>VAR4</ns2:Argument>
+                <ns2:Argument>VAR5</ns2:Argument>
+                <ns2:Argument>VAR6</ns2:Argument>
+            </ns2:POSIXApplication>
+        </Application>
+        <DataStaging>
+            <FileName>execution script</FileName>
+            <Source>
+                <URI>/usr/local/htcaas_app/ThreeKaonOmega/run.sh</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>execution script</FileName>
+            <Source>
+                <URI>/usr/local/htcaas_app/ThreeKaonOmega/ThreeKaonOmega.zip</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>output.zip</FileName>
+            <Target>
+                <URI>/home/p258rsw/output_doloop5_G6_A2/output_VAR1_VAR2_VAR3_VAR4_VAR5_VAR6.zip</URI>
+            </Target>
+        </DataStaging>
+    </JobDescription>
+
+    <ns3:Sweep>
+	    <ns3:Assignment>
+	        <ns3:DocumentNode>
+	            <ns3:Match>VAR1</ns3:Match>
+	        </ns3:DocumentNode>
+	        <ns3:LoopInteger start="1" end="1500" step="50" />
+	    </ns3:Assignment>
+	    <ns3:Sweep>
+		    <ns3:Assignment>
+		        <ns3:DocumentNode>
+		            <ns3:Match>VAR2</ns3:Match>
+		        </ns3:DocumentNode>
+		        <ns3:LoopInteger start="-1" end="1" step="2" />
+		    </ns3:Assignment>
+		    <ns3:Sweep>
+			    <ns3:Assignment>
+			        <ns3:DocumentNode>
+			            <ns3:Match>VAR3</ns3:Match>
+			        </ns3:DocumentNode>
+			        <ns3:LoopInteger start="-1" end="1" step="2" />
+			    </ns3:Assignment>
+			    <ns3:Sweep>
+				    <ns3:Assignment>
+				        <ns3:DocumentNode>
+				            <ns3:Match>VAR4</ns3:Match>
+				        </ns3:DocumentNode>
+				        <ns3:LoopInteger start="-3" end="3" step="2" />
+				    </ns3:Assignment>
+				    <ns3:Sweep>
+					    <ns3:Assignment>
+					        <ns3:DocumentNode>
+					            <ns3:Match>VAR5</ns3:Match>
+					        </ns3:DocumentNode>
+					        <ns3:LoopInteger start="1" end="6" step="1" />
+					    </ns3:Assignment>
+					    <ns3:Sweep>
+						    <ns3:Assignment>
+						        <ns3:DocumentNode>
+						            <ns3:Match>VAR6</ns3:Match>
+						        </ns3:DocumentNode>
+						        <ns3:LoopInteger start="1" end="6" step="1" />
+						    </ns3:Assignment>
+						</ns3:Sweep>
+					</ns3:Sweep>
+				</ns3:Sweep>
+			</ns3:Sweep>
+		</ns3:Sweep>
+	</ns3:Sweep>
+
+
+</JobDefinition>

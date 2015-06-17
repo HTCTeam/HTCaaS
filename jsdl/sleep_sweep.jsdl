@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<JobDefinition xmlns="http://schemas.ggf.org/jsdl/2005/11/jsdl" xmlns:ns2="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix" xmlns:ns3="http://schemas.ogf.org/jsdl/2009/03/sweep">
+
+    <JobDescription>
+        <Application>
+            <ApplicationName>general</ApplicationName>
+            <ns2:POSIXApplication>
+                <ns2:Executable>sleep10.sh</ns2:Executable>
+                <ns2:Argument>EXPNUM</ns2:Argument>
+            </ns2:POSIXApplication>
+        </Application>
+        <DataStaging>
+            <FileName>execution script</FileName>
+            <Source>
+                <URI>/usr/local/htcaas_app/sleep/sleep10.sh</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>EXPNUM.out</FileName>
+            <Target>
+                <URI>/pwork01/p258rsw/output/EXPNUM.out</URI>
+            </Target>
+        </DataStaging>
+    </JobDescription>
+
+    	<ns3:Sweep>
+	    <ns3:Assignment>
+	        <ns3:DocumentNode>
+	            <ns3:Match>EXPNUM</ns3:Match>
+	        </ns3:DocumentNode>
+	        <ns3:LoopInteger start="1" end="1" step="1" />
+	    </ns3:Assignment>
+	</ns3:Sweep>
+
+
+</JobDefinition>

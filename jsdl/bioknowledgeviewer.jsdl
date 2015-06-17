@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<JobDefinition xmlns="http://schemas.ggf.org/jsdl/2005/11/jsdl" xmlns:ns2="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix" xmlns:ns3="http://schemas.ogf.org/jsdl/2009/03/sweep">
+
+    <JobDescription>
+        <Application>
+            <ApplicationName>BioKnowledge Viewer</ApplicationName>
+            <ns2:POSIXApplication>
+                <ns2:Executable>SPRG_abner.sh</ns2:Executable>
+                <ns2:Argument>INPUT</ns2:Argument>
+            </ns2:POSIXApplication>
+        </Application>
+		<DataStaging>
+            <FileName>INPUT.pmd</FileName>
+            <Source>
+                <URI>/htcaas/p258rsw/SPRG/INPUT.pmd</URI>
+            </Source>
+        </DataStaging>
+		<DataStaging>
+            <FileName>SPRG_abner.jar</FileName>
+            <Source>
+                <URI>/usr/local/htcaas_app/SPRG_abner/SPRG_abner.jar</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>execution script</FileName>
+            <Source>
+                <URI>/usr/local/htcaas_app/SPRG_abner/SPRG_abner.sh</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>OUTPUT.out</FileName>
+            <Target>
+                <URI>/htcaas/p258rsw/output/INPUT.out</URI>
+            </Target>
+        </DataStaging>
+
+    </JobDescription>
+    <ns3:Sweep>
+        <ns3:Assignment>
+            <ns3:DocumentNode>
+                <ns3:Match>INPUT</ns3:Match>
+            </ns3:DocumentNode>
+            <ns3:Directory filenameonly="true">
+                <ns3:Name>/htcaas/p258rsw/SPRG/</ns3:Name>
+            </ns3:Directory>
+        </ns3:Assignment>
+    </ns3:Sweep>
+</JobDefinition>

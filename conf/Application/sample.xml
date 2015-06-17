@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<JobDefinition xmlns="http://schemas.ggf.org/jsdl/2005/11/jsdl" xmlns:ns2="http://schemas.ggf.org/jsdl/2005/11/jsdl-posix" xmlns:ns3="http://schemas.ogf.org/jsdl/2009/03/sweep">
+    <JobDescription>
+        <Application>
+            <ApplicationName>optimization</ApplicationName>
+            <ns2:POSIXApplication>
+                <ns2:Executable>run.sh</ns2:Executable>
+                <ns2:Argument>5d-hp-new.para</ns2:Argument>
+                <ns2:Argument>EXPNUM</ns2:Argument>
+            </ns2:POSIXApplication>
+        </Application>
+        <DataStaging>
+            <FileName>5d-hp-new.para</FileName>
+            <CreationFlag>overwrite</CreationFlag>
+            <Source>
+                <URI>http://somewhere.com/~shlee/5d-hp-new.para</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>5d-hp-new.para.kEXPNUM</FileName>
+            <Target>
+                <URI>http://somewhere.com/~shlee/5d-hp-new.para.kEXPNUM</URI>
+            </Target>
+        </DataStaging>
+    </JobDescription>
+    <ns3:Sweep>
+        <ns3:Assignment>
+            <ns3:DocumentNode>
+                <ns3:Match>//jsdl-posix:Argument[2]</ns3:Match>
+            </ns3:DocumentNode>
+            <ns3:DocumentNode>
+                <ns3:Match>substring-after(//jsdl:Target/jsdl:URI[1], '.k')</ns3:Match>
+            </ns3:DocumentNode>
+            <ns3:DocumentNode>
+                <ns3:Match>substring-after(//jsdl:FileName, '.k')</ns3:Match>
+            </ns3:DocumentNode>
+            <ns3:LoopInteger step="1" end="3928" start="1"/>
+        </ns3:Assignment>
+    </ns3:Sweep>
+</JobDefinition>

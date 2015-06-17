@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="HTCaaS_Shell_Client" default="compile" basedir=".">
+
+	<property name="name" value="HTCaaS_Shell_Client" />
+	<property name="release" value="${name}" />
+	<property name="src.dir" value="src/org/kisti/htc/cli/client" />
+	<property name="build.dir" value="build" />
+	<property name="lib.dir" value="lib/cli" />
+	<property name="slib.dir" value="lib/shared" />
+	<property name="conf.dir" value="conf/cli" />
+	<property name="dist.dir" value="dist" />
+	<property name="jar.name" value="${name}.jar" />
+	<property name="jar.path" location="${dist.dir}/${jar.name}" />
+	<property name="zip.name" value="${release}.zip" />
+	<property name="zip.path" location="${dist.dir}/${zip.name}" />
+
+	<path id="classpath">
+		<pathelement location="${build.dir}" />
+		<pathelement location="${conf.dir}" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${slib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="compile" depends="prepare">
+		<javac srcdir="${src.dir}" destdir="${build.dir}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="clean">
+		<delete dir="${dist.dir}" />
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${jar.path}" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="org.kisti.htc.cli.client.SubmitMetaJob" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!--<target name="jar_gj" depends="compile">
+			<mkdir dir="${dist.dir}" />
+			<jar destfile="${jar_gj.path}" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="org.kisti.htc.cli.client.GetJobStatus" />
+			</manifest>
+		</jar>
+	</target>
+	
+
+	<target name="jar_uf" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${jar_uf.path}" basedir="${build.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="org.kisti.htc.cli.client.UploadFile" />
+			</manifest>
+		</jar>
+	</target>
+	-->
+
+	<target name="zip" depends="jar">
+		<zip destfile="${zip.path}">
+			<zipfileset dir="${dist.dir}" includes="${jar.name}" prefix="${release}/dist" />
+			<zipfileset dir="${lib.dir}" prefix="${release}/lib/cli">
+				<include name="**/*.jar" />
+			</zipfileset>
+			<zipfileset dir="${slib.dir}" prefix="${release}/lib/shared">
+				<include name="**/*.jar" />
+			</zipfileset>
+			<!--<zipfileset dir="src/org/kisti/htc/cli/client" prefix="${release}/src/org/kisti/htc/cli/client">
+				<include name="*.java" />
+			</zipfileset>
+			<zipfileset dir="build/HTCaaSClient/org/kisti/htc/cli/client" prefix="${release}/build/HTCaaSClient/org/kisti/htc/cli/client">
+				<include name="*.class" />
+			</zipfileset>
+			-->
+			<zipfileset dir="conf" prefix="${release}/conf">
+				<include name="*.conf" />
+				<include name="cli/log4j.properties" />
+			</zipfileset>
+			<zipfileset dir="client/build" prefix="${release}/client/build">
+				<include name="*" />
+			</zipfileset>
+			<zipfileset dir="client/script" prefix="${release}/client/script">
+				<include name="*" />
+			</zipfileset>
+			<zipfileset dir="jsdl" prefix="${release}/client/jsdl">
+				<include name="*.jsdl" />
+			</zipfileset>
+			<zipfileset dir="client" prefix="${release}">
+				<include name="htcaas-client-env.sh" />
+				<include name="helloworld.sh" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="deploy-zip" depends="compile">
+                <zip destfile="${zip.path}">
+                        <zipfileset dir="${lib.dir}" prefix="${release}/lib/cli">
+                                <include name="**/*.jar" />
+                        </zipfileset>
+                        <zipfileset dir="${slib.dir}" prefix="${release}/lib/shared">
+                                <include name="**/*.jar" />
+                        </zipfileset>
+                        <zipfileset dir="build/org/kisti/htc/cli/client" prefix="${release}/build/org/kisti/htc/cli/client">
+                                <include name="*.class" />
+                        </zipfileset>
+			<zipfileset dir="conf" prefix="${release}/conf">
+                                <include name="HTCaaS_Client.conf" />
+                        </zipfileset>
+                        <zipfileset dir="conf/cli" prefix="${release}/conf/cli">
+                                <include name="log4j.properties" />
+                        </zipfileset>
+                        <zipfileset dir="client/build" prefix="${release}/build">
+                                <include name="*" />
+                        </zipfileset>
+                        <zipfileset dir="client/bin" prefix="${release}/bin">
+                                <include name="*" />
+                        </zipfileset>
+                        <zipfileset dir="jsdl" prefix="${release}//jsdl">
+                                <include name="*.jsdl" />
+                        </zipfileset>
+                        <zipfileset dir="client" prefix="${release}">
+                                <include name="htcaas-client-env.sh" />
+                        </zipfileset>
+                </zip>
+        </target>
+
+	<target name="deployToPearl" depends="zip">
+		<sshexec host="pearl.kisti.re.kr" port="6980" username="seungwoo" keyfile="/home/seungwoo/.ssh/id_rsa" trust="true" command="rm -rf /usr/local/HTCaaS/HTCaaSClient" />
+		<scp todir="seungwoo@pearl.kisti.re.kr:/usr/local/HTCaaS" port="6980" keyfile="/home/seungwoo/.ssh/id_rsa">
+			<fileset dir="dist">
+				<include name="HTCaaSClient.zip" />
+			</fileset>
+		</scp>
+	</target>
+
+	<target name="deployToLocal" depends="zip">
+		<scp todir="seungwooX@localhost:/usr/local/HTCaaSClient/" port="22" id="seungwooX" password="shtmddn" trust="true">
+			<fileset dir="dist">
+				<include name="HTCaaSClient.zip" />
+			</fileset>
+		</scp>
+	</target>
+
+
+</project>

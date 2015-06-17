@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="htcaas_web" default="generate.interface" basedir=".">
+
+	<property environment="env" />
+
+	<property name="name" value="htcaas_web" />
+	<property name="release" value="${name}" />
+	<property name="src1.dir" value="src/org/kisti/htc/monitoring" />
+	<property name="src2.dir" value="src/org/kisti/htc/dbmanager" />
+	<property name="src3.dir" value="src/org/kisti/htc/jobmanager" />
+	<property name="src4.dir" value="src/org/kisti/htc/udmanager" />
+	<property name="src5.dir" value="src/org/kisti/htc/acmanager" />
+	<property name="src6.dir" value="src/org/kisti/htc/constant" />
+	<property name="build1.dir" value="build/Monitoring" />
+	<property name="build2.dir" value="build/DBManager" />
+	<property name="build3.dir" value="build/JobManager" />
+	<property name="build4.dir" value="build/UDManager" />
+	<property name="build5.dir" value="build/ACManager" />
+	<property name="build6.dir" value="build/Constant" />
+	<property name="build.dir2" value="build" />
+	<property name="lib.dir" value="lib/Monitoring" />
+	<property name="slib.dir" value="lib/shared" />
+	<property name="conf.dir" value="conf/Monitoring" />
+	<property name="dist.dir" value="dist" />
+
+	<property name="jar.name" value="${name}.jar" />
+	<property name="jar.path" location="${dist.dir}/${jar.name}" />
+
+	<path id="classpath">
+		<pathelement location="${build1.dir}" />
+		<pathelement location="${build2.dir}" />
+		<pathelement location="${build3.dir}" />
+		<pathelement location="${build4.dir}" />
+		<pathelement location="${build5.dir}" />
+		<pathelement location="${build6.dir}" />
+		<pathelement location="${conf.dir}" />
+		<pathelement location="${cxf.home}/lib/cxf-manifest.jar" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${slib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="prepare">
+		<mkdir dir="${build1.dir}" />
+	</target>
+
+	<target name="compile" depends="prepare">
+		<javac srcdir="${src1.dir}" destdir="${build1.dir}">
+			<classpath refid="classpath" />
+		</javac>
+		<javac srcdir="${src2.dir}" destdir="${build2.dir}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="generate.interface">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${jar.path}">
+			<fileset dir="${build1.dir}">
+				<include name="org/kisti/htc/monitoring/server/Monitoring.class" />
+			</fileset>
+			<fileset dir="${build2.dir}">
+				<include name="org/kisti/htc/dbmanager/beans/*.class" />
+			</fileset>
+			<fileset dir="${build3.dir}">
+				<include name="org/kisti/htc/jobmanager/server/JobManager.class" />
+			</fileset>
+			<fileset dir="${build4.dir}">
+				<include name="org/kisti/htc/udmanager/server/UserDataManager.class" />
+				<include name="org/kisti/htc/udmanager/server/ChecksumChecker.class" />
+				<include name="org/kisti/htc/udmanager/bean/*.class" />
+			</fileset>
+			<fileset dir="${build5.dir}">
+				<include name="org/kisti/htc/acmanager/server/ACManager.class" />
+				<include name="org/kisti/htc/acmanager/client/*.class" />
+			</fileset>
+			<fileset dir="${build6.dir}">
+				<include name="org/kisti/htc/constant/*.class" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="generate.interface2">
+                <mkdir dir="${dist.dir}" />
+                <jar destfile="${jar.path}">
+                        <fileset dir="${build.dir2}">
+                                <include name="org/kisti/htc/monitoring/server/Monitoring.class" />
+                                <include name="org/kisti/htc/dbmanager/beans/*.class" />
+                                <include name="org/kisti/htc/jobmanager/server/JobManager.class" />
+                                <include name="org/kisti/htc/udmanager/server/UserDataManager.class" />
+                                <include name="org/kisti/htc/udmanager/server/ChecksumChecker.class" />
+                                <include name="org/kisti/htc/udmanager/bean/*.class" />
+                                <include name="org/kisti/htc/acmanager/server/ACManager.class" />
+                                <include name="org/kisti/htc/acmanager/client/*.class" />
+                                <include name="org/kisti/htc/constant/*.class" />
+                        </fileset>
+                </jar>
+        </target>
+
+</project>

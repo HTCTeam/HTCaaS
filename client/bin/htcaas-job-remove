@@ -1,0 +1,4 @@
+#!/bin/bash
+
+$HTCaaS_Client/build/run_removemetajob.sh $1 $2 $3 $4 
+

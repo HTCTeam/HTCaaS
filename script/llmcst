@@ -1,0 +1,180 @@
+#!/bin/sh
+
+
+#LL_REC_NAME[1]="kisti.pgaia"
+#LL_REC_NAME[2]="kisti.pgaia2"
+#LL_REC_NAME[3]="kisti.porion"
+LL_REC_NAME[4]="kisti.glory"
+LL_REC_NAME[5]="kisti.baekdusan"
+LL_REC_NAME[6]="kisti.solbaram"
+#LL_REC_NAME[7]="kisti.ptachyon"
+LL_REC_NAME[8]="gist.kigi"
+LL_REC_NAME[9]="pku.hamel"
+#LL_REC_NAME[10]="pnu.daisy"
+LL_REC_NAME[11]="unist.cheetah"
+#LL_REC_NAME[12]="unist.unist_smp"
+LL_REC_NAME[13]="kobic.kobic"
+#LL_REC_NAME[14]="kku.ci"
+#LL_REC_NAME[15]="tu.tusmp"
+#LL_REC_NAME[16]="uos.t2c"
+LL_REC_NAME[17]="kias.gene"
+LL_REC_NAME[18]="kias.helix"
+LL_REC_NAME[19]="kisti.sinbaram"
+
+PTACHYON[1]="tachyona"
+PTACHYON[2]="tachyonb"
+PTACHYON[3]="tachyonc"
+PTACHYON[4]="tachyond"
+
+TMPFILE=`mktemp -p /tmp tmp_ll.XXXXXX`
+
+SGE_STAT_OUT="/tmp/sge_status.out"
+
+CNT=`expr $CNT + 0`
+ROW=`expr $CNT + 5`
+MSG=""
+
+
+
+
+
+trap 'rm -f $TMPFILE ; exit 0 ;' EXIT TERM INT
+
+
+function view_summary()
+{
+	if [ "$1" != "" ]
+	then
+		cat ${TMPFILE} | egrep "normal|$1" | awk -v LL_NAME=$1 'BEGIN{ total = 0 ; available=0; tjob=0; wait=0; pending=0; running=0; node_cnt=0; flag="null" }
+				/normal/ { 
+					split( $0, tmp_arr, " ");
+					available += tmp_arr[4];
+					total += tmp_arr[5];
+					running += tmp_arr[5] - tmp_arr[4];
+					if(flag=="gene") node_cnt = total/2;
+					else if(flag=="glory") node_cnt = total/2;
+					else if(flag=="helix") node_cnt = total/2;
+					else if(flag=="cheetah") node_cnt = total/8;
+					else if(flag=="kobic") node_cnt = total/4;
+					else if(flag=="ci") node_cnt = total/2;
+					else if(flag=="kigi") node_cnt = total/2; 
+					else if(flag=="hamel") node_cnt = total/2;
+				}
+				/no job status/ {
+					tjob=0;
+					wait=0;
+					pending=0;
+					running=0;
+				}
+				/job step\(s\)/ {
+					tjob=$1;
+					wait=$6;
+					pending=$8;
+					running=$10;
+				}
+				/kias.gene/ {
+					flag="gene";
+				}
+				/kisti.glory/ {
+					flag="glory";
+				}
+				/kias.helix/ {
+					flag="helix";
+				}
+				/unist.cheetah/ {
+					flag="cheetah";
+				}
+				/kobic.kobic/ {
+					flag="kobic";
+				}
+				/kku.ci/ {
+					flag="ci";
+				}
+				/gist.kigi/ {
+					flag="kigi";
+				}
+				/pku.hamel/ {
+					flag="hamel";
+				}
+				END{
+					printf "%s %d %d %d %d %d %d", LL_NAME, node_cnt, available, total, wait,pending,running  ;
+				}' 
+	fi
+	
+}
+
+
+
+
+
+
+echo " "
+echo "--------------------------[[ PLSI COMPUTING RESOURCES ]]----------------------------"
+echo " "
+echo "----------------  ------------  ---------------------  -----------------------------"
+echo "Cluster Name      Nodes(Total)  Cpus(Available/Total)  Jobs(Waiting/Pending/Running)"
+echo "----------------  ------------  ---------------------  -----------------------------"
+
+T_NODE_CNT=0
+T_AVAILABLE=0
+T_TOTAL=0
+T_WAIT=0
+T_PENDING=0
+T_RUNING=0
+		
+for c_name in  ${LL_REC_NAME[*]}
+do
+	if [ "$c_name" != "kisti.ptachyon" ]
+	then
+		#if [ "$c_name" = "unist.cheetah" ]
+		#then
+		#	llstatus -X ${c_name} -R >  ${TMPFILE}
+		#	if [  "$c_name" = "kisti.pgaia" ]
+		#	then
+		#		llstatus -X ${c_name} | grep "Total Machines" >> ${TMPFILE}
+		#	fi
+		#	llq -X ${c_name} | egrep "no job status|job step\(s\)" >>  ${TMPFILE}
+		#	VAL=`view_summary ${c_name}`
+		#	cat ${TMPFILE} >> notpgaia2 ;
+		#else
+		timed-run 3	llclass -X ${c_name} > ${TMPFILE}
+#cat ${TMPFILE}
+			VAL=`view_summary ${c_name}`
+#			cat ${TMPFILE} > plsi_resource.info ;
+		#fi
+	else
+		if [ -f ${SGE_STAT_OUT} ]
+		then
+			VAL=`cat ${SGE_STAT_OUT}`
+		fi
+	fi
+
+	if [ "${VAL}" != "" ]
+	then
+	echo $VAL | awk '{printf "%16s        %5d            %5d/%5d          %5d/  %5d/  %5d\n", $1, $2, $3, $4, $5, $6, $7 ;}'
+
+		NODE_CNT=`echo $VAL | awk '{print $2}'`
+		AVAILABLE=`echo $VAL | awk '{print $3}'`
+		TOTAL=`echo $VAL | awk '{print $4}'`
+		WAIT=`echo $VAL | awk '{print $5}'`
+		PENDING=`echo $VAL | awk '{print $6}'`
+		RUNING=`echo $VAL | awk '{print $7}'`
+
+		T_NODE_CNT=`expr $NODE_CNT + $T_NODE_CNT`
+		T_AVAILABLE=`expr $AVAILABLE + $T_AVAILABLE`
+		T_TOTAL=`expr $TOTAL + $T_TOTAL`
+		T_WAIT=`expr $WAIT + $T_WAIT`
+		T_PENDING=`expr $PENDING + $T_PENDING`
+		T_RUNING=`expr $RUNING + $T_RUNING`
+	fi
+
+done
+
+echo "----------------  ------------  ---------------------  -----------------------------"
+echo $T_NODE_CNT " " $T_AVAILABLE " " $T_TOTAL " " $T_WAIT " " $T_PENDING " " $T_RUNING | awk '{ printf "%16s        %5d            %5d/%5d          %5d/  %5d/  %5d\n", "Total", $1, $2, $3, $4, $5, $6 }'
+echo "----------------  ------------  ---------------------  -----------------------------"
+
+
+#echo rm  $TMPFILE
+rm -rf $TMPFILE
+

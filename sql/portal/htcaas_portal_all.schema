@@ -1,0 +1,304 @@
+-- MySQL dump 10.13  Distrib 5.5.9, for Linux (x86_64)
+--
+-- Host: localhost    Database: htcaas_portal
+-- ------------------------------------------------------
+-- Server version	5.5.9-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `application`
+--
+
+DROP TABLE IF EXISTS `application`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `application` (
+  `APPLICATION_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '응용 소프트웨어 번호',
+  `APPLICATION_NAME` varchar(255) NOT NULL DEFAULT '' COMMENT '응용 소프트웨어 명',
+  `APPLICATION_COMMENT` varchar(2000) DEFAULT NULL COMMENT '비고',
+  `APPLICATION_SORT` int(11) NOT NULL DEFAULT '0' COMMENT '우선순위',
+  `APPLICATION_USE` tinyint(1) NOT NULL DEFAULT '1' COMMENT '사용유무',
+  `APPLICATION_FDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '등록일',
+  `APPLICATION_FUSERID` varchar(255) NOT NULL COMMENT '등록자',
+  `APPLICATION_LDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '최종수정일',
+  `APPLICATION_LUSERID` varchar(255) NOT NULL COMMENT '최종수정자',
+  PRIMARY KEY (`APPLICATION_NO`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='어플리케이션';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `attach`
+--
+
+DROP TABLE IF EXISTS `attach`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `attach` (
+  `ATC_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '번호',
+  `BOARD_TYPE` bigint(20) unsigned NOT NULL COMMENT '게시판 타입',
+  `BOARD_NO` bigint(20) unsigned NOT NULL COMMENT '게시판 번호',
+  `REALFILENAME` varchar(255) NOT NULL COMMENT '실제파일이름',
+  `FILENAME` varchar(255) NOT NULL COMMENT '임의파일이름',
+  `PATH` varchar(2000) NOT NULL COMMENT '파일경로',
+  `FDATE` datetime NOT NULL COMMENT '등록일',
+  `FUSERID` bigint(20) NOT NULL COMMENT '등록자',
+  PRIMARY KEY (`ATC_NO`),
+  KEY `fk_ntc_no` (`BOARD_NO`)
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8 COMMENT='첨부파일';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `code`
+--
+
+DROP TABLE IF EXISTS `code`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `code` (
+  `CODE_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '코드번호',
+  `GROUP_NO` bigint(20) DEFAULT NULL COMMENT '그룹번호',
+  `NAME` varchar(255) NOT NULL COMMENT '코드명',
+  `DESCRIPTION` varchar(255) DEFAULT NULL COMMENT '코드설명',
+  `DELYN` tinyint(1) DEFAULT '0' COMMENT '삭제여부',
+  `FDATE` datetime NOT NULL COMMENT '등록일',
+  `FUSERID` bigint(20) NOT NULL DEFAULT '0' COMMENT '등록자',
+  `LDATE` datetime NOT NULL COMMENT '최종수정일',
+  `LUSERID` bigint(20) NOT NULL DEFAULT '0' COMMENT '최종수정자',
+  PRIMARY KEY (`CODE_NO`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='코드';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `command_division`
+--
+
+DROP TABLE IF EXISTS `command_division`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `command_division` (
+  `DIV_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '분류번호',
+  `NAME` varchar(255) NOT NULL COMMENT '분류명',
+  `COMMENT` varchar(2000) DEFAULT NULL COMMENT '비고',
+  `SORT` int(11) NOT NULL DEFAULT '0' COMMENT '우선순위',
+  `USEYN` tinyint(1) NOT NULL DEFAULT '1' COMMENT '사용유무',
+  `FDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '등록일',
+  `FUSERID` bigint(20) NOT NULL COMMENT '등록자',
+  `LDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '최종수정일',
+  `LUSERID` bigint(20) NOT NULL COMMENT '최종수정자',
+  PRIMARY KEY (`DIV_NO`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='명령어 분류';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `command_information`
+--
+
+DROP TABLE IF EXISTS `command_information`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `command_information` (
+  `CMD_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '명령어안내번호',
+  `DIV_NO` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '분류번호',
+  `NAME` varchar(255) NOT NULL COMMENT '명령어안내명',
+  `COMMENT` varchar(2000) DEFAULT NULL COMMENT '비고',
+  `SORT` int(11) NOT NULL DEFAULT '0' COMMENT '우선순위',
+  `USEYN` tinyint(1) NOT NULL DEFAULT '1' COMMENT '사용유무',
+  `FDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '등록일',
+  `FUSERID` bigint(20) NOT NULL COMMENT '등록자',
+  `LDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '최종수정일',
+  `LUSERID` bigint(20) NOT NULL COMMENT '최종수정자',
+  PRIMARY KEY (`CMD_NO`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='명령어';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `job_history`
+--
+
+DROP TABLE IF EXISTS `job_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `job_history` (
+  `HST_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '제출내역번호',
+  `SCR_NO` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '스크립트번호',
+  `PATH` varchar(2000) NOT NULL COMMENT '제출내역경로-스크립트명',
+  `METAJOB_ID` bigint(20) NOT NULL COMMENT '제출내역아이디',
+  `SCRIPT` longtext CHARACTER SET latin1 COMMENT '제출된 작업스크립트',
+  `DELYN` tinyint(1) DEFAULT NULL COMMENT '삭제여부',
+  `FDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '등록일',
+  `FUSERID` varchar(255) DEFAULT NULL COMMENT '등록자',
+  `LDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '최종수정일',
+  `LUSERID` varchar(255) DEFAULT NULL COMMENT '최종수정자',
+  PRIMARY KEY (`HST_NO`)
+) ENGINE=MyISAM AUTO_INCREMENT=250 DEFAULT CHARSET=utf8 COMMENT='작업제출내역';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `job_project`
+--
+
+DROP TABLE IF EXISTS `job_project`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `job_project` (
+  `PRJ_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '프로젝트번호',
+  `NAME` varchar(255) NOT NULL COMMENT '프로젝트명',
+  `TYPE` bigint(20) NOT NULL COMMENT '게시판 타입',
+  `COMMENT` varchar(2000) DEFAULT NULL COMMENT '비고',
+  `DELYN` tinyint(1) NOT NULL COMMENT '삭제여부',
+  `FDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '등록일',
+  `FUSERID` bigint(20) NOT NULL COMMENT '등록자',
+  `LDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '최종수정일',
+  `LUSERID` bigint(20) NOT NULL COMMENT '최종수정자',
+  PRIMARY KEY (`PRJ_NO`)
+) ENGINE=MyISAM AUTO_INCREMENT=194 DEFAULT CHARSET=utf8 COMMENT='작업프로젝트';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `job_script`
+--
+
+DROP TABLE IF EXISTS `job_script`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `job_script` (
+  `SCR_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '스크립트번호',
+  `PRJ_NO` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '프로젝트번호',
+  `TPL_NO` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '템플릿번호',
+  `NAME` varchar(255) DEFAULT NULL COMMENT '스크립트명',
+  `SCRIPT` longtext CHARACTER SET latin1 COMMENT '스크립트',
+  `DELYN` tinyint(1) DEFAULT NULL COMMENT '삭제여부',
+  `FDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '등록일',
+  `FUSERID` bigint(20) NOT NULL COMMENT '등록자',
+  `LDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '최종수정일',
+  `LUSERID` bigint(20) NOT NULL COMMENT '최종수정자',
+  `ESTIMATED_TIME` int(11) unsigned DEFAULT '0',
+  PRIMARY KEY (`SCR_NO`)
+) ENGINE=MyISAM AUTO_INCREMENT=234 DEFAULT CHARSET=utf8 COMMENT='작업 스크립트';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `notice`
+--
+
+DROP TABLE IF EXISTS `notice`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `notice` (
+  `NTC_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '번호',
+  `SUBJECT` varchar(255) NOT NULL COMMENT '제목',
+  `CONTENT` longtext CHARACTER SET latin1 COMMENT '내용',
+  `IMPORTANT` tinyint(1) NOT NULL COMMENT '중요공지',
+  `DELYN` tinyint(1) NOT NULL COMMENT '삭제여부',
+  `FDATE` datetime NOT NULL COMMENT '등록일',
+  `FUSERID` bigint(20) NOT NULL COMMENT '등록자',
+  `LDATE` datetime NOT NULL COMMENT '최종수정일',
+  `LUSERID` bigint(20) NOT NULL COMMENT '최종수정자',
+  PRIMARY KEY (`NTC_NO`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='공지사항';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `pds`
+--
+
+DROP TABLE IF EXISTS `pds`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `pds` (
+  `PDS_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '번호',
+  `SUBJECT` varchar(255) NOT NULL COMMENT '제목',
+  `CONTENT` longtext COMMENT '내용',
+  `DELYN` tinyint(1) NOT NULL COMMENT '삭제여부',
+  `FDATE` datetime NOT NULL COMMENT '등록일',
+  `FUSERID` bigint(20) NOT NULL COMMENT '등록자',
+  `LDATE` datetime NOT NULL COMMENT '최종수정일',
+  `LUSERID` bigint(20) NOT NULL COMMENT '최종수정자',
+  PRIMARY KEY (`PDS_NO`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='자료실';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `qna`
+--
+
+DROP TABLE IF EXISTS `qna`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `qna` (
+  `QNA_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'QNA번호',
+  `SUBJECT` varchar(255) NOT NULL COMMENT '제목',
+  `CONTENT` longtext COMMENT '내용',
+  `CODE_NO` varchar(20) DEFAULT NULL COMMENT '코드번호',
+  `DELYN` tinyint(1) NOT NULL COMMENT '삭제여부',
+  `FDATE` datetime NOT NULL COMMENT '등록일',
+  `FUSERID` bigint(20) NOT NULL COMMENT '등록자',
+  `LDATE` datetime NOT NULL COMMENT '수정일',
+  `LUSERID` bigint(20) NOT NULL COMMENT '수정자',
+  PRIMARY KEY (`QNA_NO`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `reply`
+--
+
+DROP TABLE IF EXISTS `reply`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `reply` (
+  `REPLY_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '번호',
+  `QNA_NO` bigint(20) unsigned NOT NULL COMMENT '질문글 번호',
+  `ANSWER` longtext COMMENT '답변내용',
+  `AFDATE` datetime DEFAULT NULL COMMENT '답변등록일',
+  `AFUSERID` bigint(20) DEFAULT NULL COMMENT '답변등록자',
+  `ALDATE` datetime DEFAULT NULL COMMENT '답변수정일',
+  `ALUSERID` bigint(20) DEFAULT NULL COMMENT '답변수정자',
+  PRIMARY KEY (`REPLY_NO`),
+  KEY `fk_qna_no` (`QNA_NO`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8 COMMENT='첨부파일';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `template`
+--
+
+DROP TABLE IF EXISTS `template`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `template` (
+  `TPL_NO` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '템플릿 번호',
+  `APP_NO` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '응용소프트웨어 번호',
+  `NAME` varchar(255) NOT NULL COMMENT '템플릿 명',
+  `COMMENT` varchar(1000) DEFAULT NULL COMMENT '비고',
+  `SCRIPT` longtext NOT NULL COMMENT '스크립트 텍스트',
+  `SORT` int(11) NOT NULL DEFAULT '0' COMMENT '우선순위',
+  `USEYN` tinyint(1) NOT NULL DEFAULT '0' COMMENT '사용유무',
+  `FDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '등록일',
+  `FUSERID` varchar(255) NOT NULL DEFAULT '0' COMMENT '등록자',
+  `LDATE` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '최종수정일',
+  `LUSERID` varchar(255) NOT NULL DEFAULT '0' COMMENT '최종수정자',
+  PRIMARY KEY (`TPL_NO`)
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COMMENT='응용소프트웨어 템플릿';
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2014-06-19 17:27:32

@@ -1,0 +1,224 @@
+#!/bin/sh
+
+if [[ -z $HTCaaS_Server ]]; then
+  echo "Environment HTCaaS_Server is not set"
+  exit
+fi
+
+
+if [[ -z $1 || -z $2 ]]; then
+  echo "Usage:"
+  echo " mgrctl   service   start|stop (VO_Name)"
+  echo "   service : db, jm, mn, ud, am, ac, mq or all / gm "
+  exit
+fi
+
+
+if [[ ! -z $2 && $2 == 'start' ]]; then
+  if [[ ! -z $1 && $1 == 'all' ]]; then
+    hn=`hostname`
+    tmp='mq'
+    if [ -f $HTCaaS_Server/activeMQ/data/activemq-$hn.pid ]; then 
+        echo "$tmp is already running."
+    else    
+        echo "$tmp is launching."
+        exec $HTCaaS_Server/run.sh $tmp | tee $HTCaaS_Server/log/$tmp.log &> /dev/null &
+        sleep 3
+    fi
+
+    tmp='db'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is already running."
+    else    
+        echo "$tmp is launching."
+        exec $HTCaaS_Server/run.sh $tmp | tee $HTCaaS_Server/log/$tmp.log &> /dev/null &
+        sleep 5
+    fi
+
+    tmp='jm'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is already running."
+    else    
+        echo "$tmp is launching."
+        exec $HTCaaS_Server/run.sh  $tmp | tee $HTCaaS_Server/log/$tmp.log &> /dev/null &
+        sleep 1
+    fi
+    
+    tmp='mn'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is already running."
+    else    
+        echo "$tmp is launching."
+        exec $HTCaaS_Server/run.sh  $tmp | tee $HTCaaS_Server/log/$tmp.log &> /dev/null &
+        sleep 1
+    fi
+
+    tmp='ud'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is already running."
+    else    
+        echo "$tmp is launching."
+        exec $HTCaaS_Server/run.sh  $tmp | tee $HTCaaS_Server/log/$tmp.log &> /dev/null &
+        sleep 1
+    fi
+
+    tmp='ac'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is already running."
+    else    
+        echo "$tmp is launching."
+        exec $HTCaaS_Server/run.sh  $tmp | tee $HTCaaS_Server/log/$tmp.log &> /dev/null &
+        sleep 1
+    fi
+
+    tmp='am'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is already running."
+    else    
+        echo "$tmp is launching."
+        exec $HTCaaS_Server/run.sh  $tmp | tee $HTCaaS_Server/log/$tmp.log &> /dev/null &
+        sleep 1
+    fi
+
+  elif [[ ! -z $1 ]]; then
+      if [[ $1 == 'db' || $1 == 'jm' || $1 == 'mn' || $1 == 'ud' || $1 == 'am' || $1 == 'ac' ]]; then
+        if [ -f $HTCaaS_Server/service/$1.pid ]; then
+            echo "$1 is already running."
+        else
+            echo "$1 is launching."
+            exec $HTCaaS_Server/run.sh  $1 | tee $HTCaaS_Server/log/$1.log &> /dev/null &
+        fi
+    elif [[ $1 == 'mq' ]]; then
+        hn=`hostname`
+        if [ -f $HTCaaS_Server/activeMQ/data/activemq-$hn.pid ]; then
+            echo "$1 is already running."
+        else
+            echo "$1 is launching."
+            exec $HTCaaS_Server/run.sh  $1 | tee $HTCaaS_Server/log/$1.log &> /dev/null &
+        fi
+    elif [[ $1 == 'gm' ]]; then
+        hn=`hostname`
+        #if [ -f $HTCaaS_Server/service/$1.pid ]; then
+            echo "$1 is launching."
+            exec $HTCaaS_Server/run.sh  $1 $3 
+        #fi
+    else
+        echo "Parametar is wrong. Check your parameter!"
+    fi
+  else
+      echo "Usage:"
+    echo " mgrctl   service   start|stop"
+    echo "   service : db, jm, mn, ud, am, ac, mq or all"
+  fi
+
+elif [[ ! -z $2 && $2 == 'stop' ]]; then
+
+  if [[ ! -z $1 && $1 == 'all' ]]; then
+
+    tmp='am'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is stopping."
+        kill -9  `cat $HTCaaS_Server/service/$tmp.pid`
+        rm -rf $HTCaaS_Server/service/$tmp.pid
+        sleep 1
+    else    
+        echo "$tmp is not running."
+    fi
+
+    tmp='jm'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is stopping."
+        kill -9  `cat $HTCaaS_Server/service/$tmp.pid`
+        rm -rf $HTCaaS_Server/service/$tmp.pid
+        sleep 1
+    else    
+        echo "$tmp is not running."
+    fi
+
+    tmp='ud'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is stopping."
+        kill -9  `cat $HTCaaS_Server/service/$tmp.pid`
+        rm -rf $HTCaaS_Server/service/$tmp.pid
+        sleep 1
+    else    
+        echo "$tmp is not running."
+    fi
+
+    tmp='mn'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is stopping."
+        kill -9  `cat $HTCaaS_Server/service/$tmp.pid`
+        rm -rf $HTCaaS_Server/service/$tmp.pid
+        sleep 1
+    else    
+        echo "$tmp is not running."
+    fi
+
+    tmp='ac'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is stopping."
+        kill -9  `cat $HTCaaS_Server/service/$tmp.pid`
+        rm -rf $HTCaaS_Server/service/$tmp.pid
+        sleep 1
+    else    
+        echo "$tmp is not running."
+    fi
+
+    tmp='db'
+    if [ -f $HTCaaS_Server/service/$tmp.pid ]; then 
+        echo "$tmp is stopping."
+        kill -9  `cat $HTCaaS_Server/service/$tmp.pid`
+        rm -rf $HTCaaS_Server/service/$tmp.pid
+        sleep 2
+    else    
+        echo "$tmp is not running."
+    fi
+
+    tmp='mq'
+    hn=`hostname`
+    if [ -f $HTCaaS_Server/activeMQ/data/activemq-$hn.pid ]; then 
+        echo "$tmp is stopping."
+        kill -9  `cat $HTCaaS_Server/activeMQ/data/activemq-$hn.pid`
+        rm -rf $HTCaaS_Server/activeMQ/data/activemq-$hn.pid
+        sleep 2
+    else    
+        echo "$tmp is not running."
+    fi
+
+  elif [[ ! -z $1 ]]; then
+      if [[ $1 == 'db' || $1 == 'jm' || $1 == 'mn' || $1 == 'ud' || $1 == 'am' || $1 == 'ac' ]]; then
+          if [ -f $HTCaaS_Server/service/$1.pid ]; then
+            echo "$1 is stopping."
+            kill -9  `cat $HTCaaS_Server/service/$1.pid`
+            rm -rf $HTCaaS_Server/service/$1.pid
+            sleep 1
+        else
+            echo "$1 is not running."
+        fi
+    elif [[ $1 == 'mq' ]]; then
+        hn=`hostname`
+        if [ -f $HTCaaS_Server/activeMQ/data/activemq-$hn.pid ]; then
+            echo "$1 is stopping."
+            kill -9  `cat $HTCaaS_Server/activeMQ/data/activemq-$hn.pid`
+            rm -rf $HTCaaS_Server/activeMQ/data/activemq-$hn.pid
+            sleep 1
+        else
+            echo "$1 is not running."
+        fi
+    else     
+        "Usage:"
+        echo " mgrctl   service   start|stop"
+        echo "   service : db, jm, mn, ud, am, ac, mq or all"i
+      fi
+  else
+      echo "Usage:"
+    echo " mgrctl   service   start|stop"
+    echo "   service : db, jm, mn, ud, am, ac, mq or all"
+  fi
+else
+    echo "Usage:"
+    echo " mgrctl   service   start|stop"
+    echo "   service : db, jm, mn, ud, am, ac, mq or all"
+fi
+ 

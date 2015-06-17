@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="AgentManager" default="run" basedir=".">
+	
+	<property name="lib.dir" value="lib" />
+	<property name="conf.dir" value="conf/AgentManager" />
+	<property name="dist.dir" value="dist" />
+	<property name="jar.name" value="agentmanager.jar" />
+	<property name="jar.path" location="${dist.dir}/${jar.name}" />
+		
+	<path id="classpath">
+		<pathelement location="${build.dir}" />
+		<pathelement location="${conf.dir}" />
+		<pathelement location="conf" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="run">
+        <java classname="org.kisti.htc.agentmanager.AgentManager" fork="true">
+            <classpath>
+            	<path refid="classpath" />
+            	<path location="${jar.path}"/>
+            </classpath>
+        </java>
+	</target>
+	
+</project>

@@ -1,0 +1,15 @@
+org.kisti.htc.acmanager.client
+org.kisti.htc.acmanager.server
+org.kisti.htc.agentmanager
+org.kisti.htc.dbmanager.beans
+org.kisti.htc.dbmanager.client
+org.kisti.htc.dbmanager.dao
+org.kisti.htc.dbmanager.server
+org.kisti.htc.jobmanager.client
+org.kisti.htc.jobmanager.server
+org.kisti.htc.message
+org.kisti.htc.monitoring.client
+org.kisti.htc.monitoring.server
+org.kisti.htc.udmanager.bean
+org.kisti.htc.udmanager.client
+org.kisti.htc.udmanager.server
