@@ -6,12 +6,18 @@
             <ns2:POSIXApplication>
                 <ns2:Executable>hello_sweep.sh</ns2:Executable>
             	<ns2:Argument>EXPNUM</ns2:Argument>
-			</ns2:POSIXApplication>
+	    </ns2:POSIXApplication>
         </Application>
         <DataStaging>
             <FileName>hello_sweep.sh</FileName>
             <Source>
                 <URI>$HTCaaS_Server/jsdl/hello_sweep.sh</URI>
+            </Source>
+        </DataStaging>
+        <DataStaging>
+            <FileName>hello.run</FileName>
+            <Source>
+                <URI>$HTCaaS_Server/jsdl/hello.run</URI>
             </Source>
         </DataStaging>
         <DataStaging>
@@ -22,14 +28,14 @@
         </DataStaging>
     </JobDescription>
 	
-	<ns3:Sweep>
-        <ns3:Assignment>
-			<ns3:DocumentNode>
-				<ns3:Match>EXPNUM</ns3:Match>
-			</ns3:DocumentNode>
-			<ns3:LoopInteger step="1" end="3" start="1"/>
-		</ns3:Assignment>
-	</ns3:Sweep>
+    <ns3:Sweep>
+    	<ns3:Assignment>
+	    <ns3:DocumentNode>
+		<ns3:Match>EXPNUM</ns3:Match>
+	    </ns3:DocumentNode>
+	    <ns3:LoopInteger step="1" end="3" start="1"/>
+	</ns3:Assignment>
+    </ns3:Sweep>
 </JobDefinition>
 
 
