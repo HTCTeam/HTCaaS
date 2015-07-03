@@ -1,0 +1,28 @@
+#!/bin/sh
+
+cat <<EOS
+                                                                                                                        
+HHHHHHHHH     HHHHHHHHHTTTTTTTTTTTTTTTTTTTTTTT       CCCCCCCCCCCCC                                      SSSSSSSSSSSSSSS 
+H:::::::H     H:::::::HT:::::::::::::::::::::T    CCC::::::::::::C                                    SS:::::::::::::::S
+H:::::::H     H:::::::HT:::::::::::::::::::::T  CC:::::::::::::::C                                   S:::::SSSSSS::::::S
+HH::::::H     H::::::HHT:::::TT:::::::TT:::::T C:::::CCCCCCCC::::C                                   S:::::S     SSSSSSS
+  H:::::H     H:::::H  TTTTTT  T:::::T  TTTTTTC:::::C       CCCCCC  aaaaaaaaaaaaa    aaaaaaaaaaaaa   S:::::S            
+  H:::::H     H:::::H          T:::::T       C:::::C                a::::::::::::a   a::::::::::::a  S:::::S            
+  H::::::HHHHH::::::H          T:::::T       C:::::C                aaaaaaaaa:::::a  aaaaaaaaa:::::a  S::::SSSS         
+  H:::::::::::::::::H          T:::::T       C:::::C                         a::::a           a::::a   SS::::::SSSSS    
+  H:::::::::::::::::H          T:::::T       C:::::C                  aaaaaaa:::::a    aaaaaaa:::::a     SSS::::::::SS  
+  H::::::HHHHH::::::H          T:::::T       C:::::C                aa::::::::::::a  aa::::::::::::a        SSSSSS::::S 
+  H:::::H     H:::::H          T:::::T       C:::::C               a::::aaaa::::::a a::::aaaa::::::a             S:::::S
+  H:::::H     H:::::H          T:::::T        C:::::C       CCCCCCa::::a    a:::::aa::::a    a:::::a             S:::::S
+HH::::::H     H::::::HH      TT:::::::TT       C:::::CCCCCCCC::::Ca::::a    a:::::aa::::a    a:::::a SSSSSSS     S:::::S
+H:::::::H     H:::::::H      T:::::::::T        CC:::::::::::::::Ca:::::aaaa::::::aa:::::aaaa::::::a S::::::SSSSSS:::::S
+H:::::::H     H:::::::H      T:::::::::T          CCC::::::::::::C a::::::::::aa:::aa::::::::::aa:::aS:::::::::::::::SS 
+HHHHHHHHH     HHHHHHHHH      TTTTTTTTTTT             CCCCCCCCCCCCC  aaaaaaaaaa  aaaa aaaaaaaaaa  aaaa SSSSSSSSSSSSSSS   
+                                                                                                                        
+EOS
+
+hostname
+date
+uname -a
+
+

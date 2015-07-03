@@ -16,7 +16,7 @@
         <DataStaging>
             <FileName>helloworld.out</FileName>
             <Target>
-                <URI>/home/htcaas/helloworld.out</URI>
+                <URI>/home/htcaas/output/helloworld.out</URI>
             </Target>
         </DataStaging>
     </JobDescription>

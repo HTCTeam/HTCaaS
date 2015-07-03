@@ -11,21 +11,21 @@
         <DataStaging>
             <FileName>hello.sh</FileName>
             <Source>
-                <URI>/usr/local/htcaas_app/hello/hello.sh</URI>
+                <URI>$HTCaaS_Server/jsdl/hello.sh</URI>
             </Source>
         </DataStaging>
 
         <DataStaging>
             <FileName>hello.run</FileName>
             <Source>
-                <URI>/usr/local/htcaas_app/hello/hello.run</URI>
+                <URI>$HTCaaS_Server/jsdl/hello.run</URI>
             </Source>
         </DataStaging>
 
         <DataStaging>
             <FileName>hello.out</FileName>
             <Target>
-                <URI>/htcaas/p258rsw/out/hello.out</URI>
+                <URI>/home/htcaas/output/hello.out</URI>
             </Target>
         </DataStaging>
     </JobDescription>
