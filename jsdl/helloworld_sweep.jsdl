@@ -30,7 +30,6 @@
 			<ns3:LoopInteger step="1" end="3" start="1"/>
 		</ns3:Assignment>
 	</ns3:Sweep>
-	
 </JobDefinition>
 
 
